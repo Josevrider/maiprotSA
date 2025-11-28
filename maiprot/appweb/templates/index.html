@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inicio - Maiprot{% endblock %}
+
+{% block content %}
+<section class="bienvenida">
+    <div class="intro">
+        <h2>Bienvenido a Maiprot</h2>
+        <p>
+            Somos una microempresa dedicada a la confección profesional de productos médicos, hospitalarios y de cocina. 
+            Nos especializamos en crear soluciones textiles de alta calidad para distintas empresas y profesionales del rubro de la salud.
+        </p>
+    </div>
+</section>
+
+<section class="productos-destacados">
+    <h2>Nuestros productos destacados</h2>
+    <div class="lista-productos">
+        <div class="producto">
+            <img src="{% static 'img/kit_Veterinario.jpg' %}" alt="Kit de Veterinario">
+            <h3>Kits de Cirugia Dentales</h3>
+            <p>Conjuntos personalizados para clínicas y laboratorios dentales.</p>
+        </div>
+        <div class="producto">
+            <img src="{% static 'img/camisa_medica.jpg' %}" alt="Camisa Médica">
+            <h3>Ropa Médica</h3>
+            <p>Uniformes clínicos y conjuntos diseñados a medida para personal médico.</p>
+        </div>
+        <div class="producto">
+            <img src="{% static 'img/pantalon_medico.jpg' %}" alt="Pantalón Médico">
+            <h3>Ropa Médica</h3>
+            <p>Uniformes clínicos y conjuntos diseñados a medida para personal médico.</p>
+        </div>
+        <div class="producto">
+            <img src="{% static 'img/sabanillas.jpg' %}" alt="Sabanillas 1 Elastico">
+            <h3>Sabanillas</h3>
+            <p>Elaboradas con material proporcionado por el cliente y entregadas listas para uso.</p>
+        </div>
+    </div>
+</section>
+
+<section class="mensaje-final">
+    <h2>Comprometidos con la calidad y la confianza</h2>
+    <p>
+        En Maiprot trabajamos cada día para ofrecer productos de confección que cumplan con los más altos estándares de calidad, 
+        adaptándonos a las necesidades de cada cliente.
+    </p>
+</section>
+{% endblock %}
+

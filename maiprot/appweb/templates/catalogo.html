@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Catálogo - Maiprot{% endblock %}
+
+{% block content %}
+
+<h2 class="titulo-catalogo">Catálogo de Productos</h2>
+
+<div class="productos-grid">
+
+    {% for producto in productos %}
+    <div class="producto-card">
+
+        <div class="imagen-galeria-container">
+
+            {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" class="imagen-principal" alt="{{ producto.nombre }}">
+            {% else %}
+                <img src="{% static 'img/placeholder.png' %}" class="imagen-principal" alt="sin imagen">
+            {% endif %}
+
+            {% comment %} Carrusel de imágenes {% endcomment %}
+            {% if producto.imagenes_adicionales.all %}
+            <div class="galeria-hover" data-producto-id="{{ producto.id }}">
+                <div class="carrusel-imagenes" data-current-slide="0">
+
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" class="carrusel-img active" alt="{{ producto.nombre }}">
+                    {% endif %}
+
+                    {% for img in producto.imagenes_adicionales.all %}
+                        <img src="{{ img.imagen.url }}" class="carrusel-img" alt="{{ img.descripcion|default:producto.nombre }}">
+                    {% endfor %}
+
+                </div>
+
+                <button class="prev-btn" aria-label="Anterior">&#10094;</button>
+                <button class="next-btn" aria-label="Siguiente">&#10095;</button>
+            </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="producto-detalles">
+
+            <h3 class="producto-nombre">{{ producto.nombre }}</h3>
+
+            <p class="descripcion-corta">
+                {{ producto.descripcion|truncatechars:80 }}
+            </p>
+
+            <p class="producto-precio">
+                ${{ producto.precio|floatformat:0 }}
+            </p>
+
+
+            {% if user.is_authenticated %}
+
+                <form action="{% url 'agregar_carrito' producto.id %}"
+                      method="post"
+                      class="form-agregar">
+
+                    {% csrf_token %}
+
+                    <div class="cantidad-wrapper">
+                        <label for="cantidad-{{ producto.id }}">Cantidad:</label>
+                        <input 
+                            id="cantidad-{{ producto.id }}"
+                            type="number" 
+                            name="cantidad" 
+                            value="1" 
+                            min="1" 
+                            class="input-cantidad"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn-agregar add-to-cart-btn">
+                        Agregar al carrito
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <a href="{% url 'login' %}" class="btn-login-prompt">
+                    Inicia sesión para pedir
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/galeria.js' %}"></script>
+{% endblock %}

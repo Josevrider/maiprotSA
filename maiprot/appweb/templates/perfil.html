@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Mi Perfil - Maiprot{% endblock %}
+
+{% block content %}
+
+<div class="perfil-container">
+
+    <div class="perfil-card">
+
+        <div class="perfil-header">
+            <h2>Perfil de {{ user.username }}</h2>
+        </div>
+
+        <div class="perfil-body">
+
+            <div class="perfil-foto">
+                <img src="{% if user.perfilusuario.imagen_perfil %}{{ user.perfilusuario.imagen_perfil.url }}{% else %}{% static 'img/default_profile.png' %}{% endif %}" alt="Foto de perfil">
+            </div>
+
+            <div class="perfil-info">
+                <p><strong>Nombre:</strong> {{ user.first_name|default:"No especificado" }} {{ user.last_name|default:"" }}</p>
+                <p><strong>Email:</strong> {{ user.email|default:"No especificado" }}</p>
+                <p><strong>Dirección:</strong> {{ user.perfilusuario.direccion|default:"No especificada" }}</p>
+                <p><strong>Teléfono:</strong> {{ user.perfilusuario.telefono|default:"No especificado" }}</p>
+            </div>
+
+        </div>
+
+        <div class="perfil-footer">
+            <a href="{% url 'editar_perfil' %}" class="btn-perfil-editar">Editar Perfil</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

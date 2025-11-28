@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Factura N° {{ factura.id }}</title>
+    <style>
+        /* ----------------------------------- */
+        /* ESTILOS AVANZADOS (PARA PDF)        */
+        /* ----------------------------------- */
+        body { font-family: 'Arial', sans-serif; font-size: 10px; margin: 20px; }
+        .container { width: 100%; max-width: 800px; margin: 0 auto; }
+        
+        /* Encabezado */
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+            border-bottom: 2px solid #333; /* Línea de separación */
+            padding-bottom: 10px;
+        }
+        .header .logo { max-width: 100px; height: auto; }
+        .header .info-factura h1 { font-size: 20px; color: #007bff; margin: 0; }
+        .header .info-factura p { margin: 2px 0; font-size: 11px; }
+
+        /* Secciones de Datos (Cliente) */
+        .seccion { margin-bottom: 20px; padding: 10px; border: 1px solid #eee; border-radius: 5px; }
+        .seccion h2 { font-size: 14px; color: #555; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 0; }
+        
+        /* Tabla de Productos */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f8f9fa; color: #333; font-weight: bold; }
+        
+        /* Totales */
+        .total-box { 
+            margin-top: 30px; 
+            padding: 10px; 
+            background-color: #e9ecef; 
+            text-align: right; 
+            border-radius: 5px;
+        }
+        .total-box h3 { font-size: 16px; margin: 0; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="info-empresa">
+                <strong>MAIPROT S.A.</strong><br>
+                <small>Facturación Electrónica | R.U.T. 76.543.210-1</small><br>
+                <small>Av. Principal #123, Ciudad | Tel: 22 5555 6666</small>
+            </div>
+            <div class="info-factura">
+                <h1>FACTURA N° {{ factura.id }}</h1>
+                <p>Fecha de Emisión: **{{ factura.fecha_emision|date:"d/m/Y H:i" }}**</p>
+                <p>Estado: **{{ factura.estado }}**</p>
+            </div>
+        </div>
+        
+        <div class="seccion">
+            <h2>Información del Cliente</h2>
+            <p><strong>Usuario:</strong> {{ factura.pedido.usuario.username }}</p>
+            
+            {% if factura.pedido.usuario.perfilusuario.direccion %}
+                <p><strong>Dirección:</strong> {{ factura.pedido.usuario.perfilusuario.direccion }}</p>
+            {% endif %}
+            
+            {% if factura.pedido.usuario.perfilusuario.telefono %}
+                <p><strong>Teléfono:</strong> {{ factura.pedido.usuario.perfilusuario.telefono }}</p>
+            {% endif %}
+            
+        </div>
+
+        <div class="seccion">
+            <h2>Detalles del Pedido (N° {{ factura.pedido.id }})</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Producto</th>
+                        <th style="width: 15%;">Cantidad</th>
+                        <th style="width: 20%;">Precio Unitario</th>
+                        <th style="width: 15%;">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in factura.pedido.detalles.all %}
+                    <tr>
+                        <td>{{ detalle.producto.nombre }}</td>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>${{ detalle.precio_unitario_guardado|floatformat:2 }}</td>
+                        <td>${{ detalle.subtotal|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No hay detalles de productos para este pedido.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="total-box">
+            <h3>MONTO TOTAL: ${{ factura.monto_total|floatformat:0 }}</h3>
+        </div>
+
+        <p style="margin-top: 40px; font-size: 9px; text-align: center;">Documento no válido como factura tributaria. Versión de prueba.</p>
+
+    </div>
+</body>
+</html>

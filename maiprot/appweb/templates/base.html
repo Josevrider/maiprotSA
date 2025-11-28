@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Maiprot{% endblock %}</title>
+
+  <!-- CSS PRINCIPAL -->
+  <link rel="stylesheet" href="{% static 'appweb/css/style.css' %}">
+
+  <!-- Íconos FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- ================================
+       HEADER PROFESIONAL
+  ==================================== -->
+  <header class="header">
+      <div class="header-container">
+
+          <!-- LOGO -->
+          <a href="{% url 'inicio' %}" class="logo">
+              <span>Maiprot</span>
+          </a>
+
+          <nav class="nav-menu">
+
+                <!-- Inicio -->
+                <a href="{% url 'inicio' %}" title="Inicio">
+                    <i class="fa-solid fa-house"></i>
+                </a>
+
+                <!-- Catálogo -->
+                <a href="{% url 'catalogo' %}" title="Catálogo">
+                    <i class="fa-solid fa-store"></i>
+                </a>
+
+                {% if user.is_authenticated %}
+
+                    <!-- Carrito con badge seguro -->
+                    <a href="{% url 'ver_carrito' %}" class="carrito-icono" title="Mi Carrito">
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                        {% with carrito=user.carrito|default_if_none:None %}
+                            {% if carrito %}
+                                {% with total_items=carrito.items.count %}
+                                    {% if total_items > 0 %}
+                                        <span class="carrito-badge">{{ total_items }}</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
+                        {% endwith %}
+                    </a>
+
+                    <!-- Perfil -->
+                    <a href="{% url 'ver_perfil' %}" title="Mi Perfil">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+
+                    <!-- Cerrar sesión -->
+                    <a href="{% url 'logout' %}" title="Cerrar sesión">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+
+                {% else %}
+
+                    <!-- Iniciar Sesión -->
+                    <a href="{% url 'login' %}" title="Iniciar Sesión">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                    </a>
+
+                    <!-- Registrarse -->
+                    <a href="{% url 'registro' %}" title="Registrarse">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </a>
+
+                {% endif %}
+          </nav>
+
+      </div>
+  </header>
+
+  <!-- MENSAJES FLASH -->
+  {% if messages %}
+  <div class="container-mensajes">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main>
+      {% block content %}
+      {% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Maiprot. Todos los derechos reservados.</p>
+  </footer>
+
+  {% block extra_js %}
+  {% endblock %}
+
+</body>
+</html>

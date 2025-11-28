@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi Carrito - Maiprot{% endblock %}
+
+{% block content %}
+
+<div class="carrito-wrapper">
+
+    <h2 class="carrito-titulo"><i class="fa fa-shopping-cart"></i> Mi Carrito</h2>
+
+    {% if carrito.items.all %}
+    
+    <div class="carrito-contenido">
+        
+        <!-- LISTA DE PRODUCTOS -->
+        <div class="carrito-lista">
+
+            {% for item in carrito.items.all %}
+            <div class="carrito-item" id="item-{{ item.id }}">
+
+                <!-- Imagen -->
+                <div class="carrito-item-img">
+                    {% if item.producto.imagen %}
+                        <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}">
+                    {% else %}
+                        <img src="{% static 'img/placeholder.png' %}" alt="{{ item.producto.nombre }}">
+                    {% endif %}
+                </div>
+
+                <!-- Datos -->
+                <div class="carrito-item-info">
+                    <h3>{{ item.producto.nombre }}</h3>
+                    <p class="precio-unit">Precio unidad: ${{ item.producto.precio|floatformat:0 }}</p>
+
+                    <!-- Campo editable AJAX -->
+                    <input 
+                        type="number" 
+                        class="cantidad-input" 
+                        min="1" 
+                        value="{{ item.cantidad }}" 
+                        data-item="{{ item.id }}"
+                    >
+                </div>
+
+                <!-- Subtotal -->
+                <div class="carrito-item-subtotal" id="subtotal-{{ item.id }}">
+                    ${{ item.subtotal|floatformat:0 }}
+                </div>
+
+                <!-- BOTÓN BASURERO -->
+                <button class="btn-eliminar" onclick="eliminarItem('{{ item.id }}')" title="Eliminar">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <!-- RESUMEN -->
+        <div class="carrito-resumen">
+            <h3>Resumen de compra</h3>
+
+            <p><strong>Productos ({{ carrito.items.count }}):</strong> 
+                $<span id="total-carrito">{{ carrito.total|floatformat:0 }}</span>
+            </p>
+
+            <hr>
+
+            <p class="total-final"><strong>Total:</strong> 
+                $<span id="total-carrito2">{{ carrito.total|floatformat:0 }}</span>
+            </p>
+
+            <a href="{% url 'realizar_pedido' %}" class="btn-confirmar">Continuar compra</a>
+        </div>
+
+    </div>
+
+    {% else %}
+    <p class="carrito-vacio">Tu carrito está vacío.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/carrito.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,9 @@
+<p><strong>Nombre:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
+<p><strong>Email:</strong> {{ usuario.email }}</p>
+<hr>
+<p><strong>Dirección:</strong> {{ usuario.perfilusuario.direccion }}</p>
+<p><strong>Teléfono:</strong> {{ usuario.perfilusuario.telefono }}</p>
+{% if usuario.perfilusuario.imagen_perfil %}
+    <img src="{{ usuario.perfilusuario.imagen_perfil.url }}" alt="Imagen de Perfil">
+{% endif %}
+<a href="{% url 'editar_perfil' %}" class="btn btn-primary">Editar Perfil</a>

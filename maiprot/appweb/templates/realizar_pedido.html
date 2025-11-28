@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Realizar Pedido - Maiprot{% endblock %}
+
+{% block content %}
+
+<div class="pedido-wrapper">
+
+    <h2 class="pedido-titulo"><i class="fa-solid fa-file-invoice"></i> Realizar Pedido</h2>
+
+    <div class="pedido-card">
+
+        <h3 class="pedido-resumen-titulo">Resumen de tu carrito</h3>
+
+        <div class="pedido-resumen">
+            {% for item in carrito.items.all %}
+                <div class="pedido-item">
+                    <span>{{ item.producto.nombre }} (x{{ item.cantidad }})</span>
+                    <span class="precio-item">${{ item.subtotal|floatformat:0 }}</span>
+                </div>
+            {% endfor %}
+
+            <hr>
+
+            <p class="pedido-total"><strong>Total:</strong> ${{ carrito.total|floatformat:0 }}</p>
+        </div>
+
+        <form method="post" class="pedido-form">
+            {% csrf_token %}
+
+            <label class="pedido-label">¿Es urgente?</label>
+            <select name="urgente" class="pedido-input">
+                <option value="no">No, pedido normal (mínimo 7 días)</option>
+                <option value="si">Sí, urgente</option>
+            </select>
+
+            <label class="pedido-label">Plazo solicitado (días):</label>
+            <input type="number" name="plazo" min="7" value="7" class="pedido-input">
+
+            <button type="submit" class="btn-confirmar btn-grande">
+                Enviar Pedido
+            </button>
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

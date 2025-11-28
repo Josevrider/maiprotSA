@@ -1,0 +1,822 @@
+/* =====================================================
+   ESTILOS GENERALES
+===================================================== */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Botón general */
+.btn {
+    background: #2c7be5;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background 0.3s;
+    display: inline-block;
+}
+.btn:hover {
+    background: #1a5cb4;
+}
+
+/* =====================================================
+   HERO INICIO
+===================================================== */
+.hero {
+    background: linear-gradient(135deg, #2c7be5, #6ca0dc);
+    color: #fff;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h1 { font-size: 2.5rem; margin-bottom: 15px; }
+.hero p { font-size: 1.2rem; }
+
+/* =====================================================
+   SECCIONES
+===================================================== */
+section {
+    background: #fff;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 1000px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* =====================================================
+   CATÁLOGO PROFESIONAL ESTILO FALABELLA
+===================================================== */
+
+.titulo-catalogo {
+    text-align: left;
+    margin: 30px 40px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1e1e1e;
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 35px;
+    padding: 20px 40px;
+}
+
+/* TARJETA DE PRODUCTO */
+.producto-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #ffffff;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+}
+
+/* CONTENEDOR DE IMAGEN */
+.imagen-galeria-container {
+    width: 100%;
+    height: 180px; 
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagen-principal {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* evita distorsión */
+    padding: 10px;
+}
+
+/* DETALLES DEL PRODUCTO */
+.producto-detalles {
+    padding: 20px 18px;
+    text-align: center;
+}
+
+.producto-detalles h3 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.descripcion-corta {
+    font-size: 0.9rem;
+    color: #666;
+    min-height: 40px;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+/* PRECIO */
+.precio-etiqueta {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #008c44;
+    margin: 10px 0 18px 0;
+}
+
+/* FORMULARIO AGREGAR */
+.form-agregar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.input-cantidad {
+    width: 55px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* BOTÓN AGREGAR */
+.btn-agregar {
+    padding: 10px 18px;
+    background: #008c44;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.btn-agregar:hover { background: #006c33; }
+
+.btn-login-prompt {
+    display: inline-block;
+    padding: 10px;
+    background: #0d6efd;
+    color: white;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+/* =====================================================
+   FORMULARIOS LOGIN / REGISTRO
+===================================================== */
+
+.form-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    background: #f7f7f7;
+}
+
+.form-container {
+    background: #fff;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group { margin-bottom: 15px; }
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+.form-footer a {
+    color: #2c7be5;
+    font-weight: bold;
+}
+
+/* =====================================================
+   ENCABEZADO Y NAVEGACIÓN
+===================================================== */
+
+.header {
+    background: #ffffff;
+    padding: 15px 40px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo span {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0a3d62;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.nav-menu a {
+    font-size: 1.4rem;
+    color: #0a3d62;
+    padding: 6px 10px;
+    border-radius: 10px;
+    transition: 0.3s ease;
+}
+
+.nav-menu a:hover {
+    background: #e3f2ff;
+    color: #005f8c;
+}
+
+.nav-user {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #003f5c;
+}
+
+
+/* =====================================================
+   PIE DE PÁGINA
+===================================================== */
+footer {
+    background-color: #1a2a40;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 40px;
+}
+
+/* ===========================================
+   PERFIL / VISTA USUARIO
+=========================================== */
+
+.perfil-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.perfil-card {
+    background: #fff;
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.perfil-header h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+}
+
+.perfil-body {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.perfil-foto img {
+    width: 110px;
+    height: 110px;
+    border-radius: 100px;
+    object-fit: cover;
+    border: 3px solid #3498db;
+}
+
+.perfil-info p {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: #444;
+}
+
+.perfil-footer {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.btn-perfil-editar {
+    background: #3498db;
+    padding: 10px 20px;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: bold;
+}
+.btn-perfil-editar:hover {
+    background: #2c82c9;
+}
+
+/* ===========================================
+   EDITAR PERFIL (FORMULARIO)
+=========================================== */
+
+.editar-container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.editar-card {
+    background: #fff;
+    width: 100%;
+    max-width: 800px;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.editar-titulo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.btn-guardar {
+    width: 100%;
+    padding: 12px;
+    background: #27ae60;
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.btn-guardar:hover {
+    background: #1d8b4c;
+}
+
+/* ===========================================
+   HEADER PROFESIONAL
+=========================================== */
+
+.header {
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 12px 0;
+    margin-bottom: 10px;
+}
+
+.header-container {
+    width: 95%;
+    max-width: 1400px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* LOGO */
+.logo {
+    text-decoration: none;
+}
+.logo span {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0a3d62;
+    cursor: pointer;
+}
+
+/* NAV MENU */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #ffffff;
+    background: #0077b6;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-menu a:hover {
+    background: #005f8c;
+}
+
+/* Nombre del usuario */
+.nav-user {
+    color: #003f5c;
+    font-weight: bold;
+    margin-right: 10px;
+    padding: 8px 5px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .nav-menu {
+        gap: 12px;
+    }
+    .logo span {
+        font-size: 1.6rem;
+    }
+}
+
+/* ===========================================
+   CARRITO ESTILO PROFESIONAL (OPCIÓN B)
+=========================================== */
+
+.carrito-wrapper {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.carrito-titulo {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.carrito-contenido {
+    display: flex;
+    gap: 30px;
+}
+
+/* ===========================================
+   LISTA DE PRODUCTOS
+=========================================== */
+.carrito-lista {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.carrito-item {
+    display: grid;
+    grid-template-columns: 120px 1fr 120px 50px;
+    align-items: center;
+    background: #fafafa;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Imagen pequeña */
+.carrito-item-img img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Info del producto */
+.carrito-item-info h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.precio-unit {
+    color: #555;
+    margin: 5px 0 10px;
+}
+
+.cantidad-input {
+    width: 60px;
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Subtotal */
+.carrito-item-subtotal {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #008c44;
+    text-align: center;
+}
+
+/* Menú de opciones */
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.menu-opciones {
+    display: none;
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.carrito-item-menu:hover .menu-opciones {
+    display: block;
+}
+
+/* ===========================================
+   RESUMEN
+=========================================== */
+
+.carrito-resumen {
+    width: 30%;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.carrito-resumen h3 {
+    margin-top: 0;
+}
+
+.total-final {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.btn-confirmar {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-eliminar {
+    background: #ff4d4d;
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s ease;
+}
+
+.btn-eliminar:hover {
+    background: #cc0000;
+}
+
+.carrito-item {
+    display: grid;
+    grid-template-columns: 120px 1fr 120px 50px;
+    gap: 15px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.btn-confirmar {
+    display: block;
+    text-align: center;
+    background: #008c44;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: 0.25s ease;
+}
+
+.btn-confirmar:hover {
+    background: #006c33;
+}
+
+/* ==========================================
+   REALIZAR PEDIDO
+========================================== */
+
+.pedido-wrapper {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.pedido-titulo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0a3d62;
+    margin-bottom: 25px;
+}
+
+.pedido-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+.pedido-resumen {
+    margin-bottom: 25px;
+}
+
+.pedido-resumen-titulo {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.pedido-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 1rem;
+}
+
+.pedido-total {
+    font-size: 1.4rem;
+    text-align: right;
+    margin-top: 10px;
+    color: #0a3d62;
+}
+
+.pedido-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.pedido-label {
+    font-weight: bold;
+}
+
+.pedido-input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.btn-grande {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    font-size: 1.1rem;
+}
+
+.fade-out {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: 0.3s ease-in-out;
+}
+
+/* Carrusel dentro de la tarjeta */
+.galeria-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.producto-card { position: relative; overflow: hidden; }
+
+/* muestra overlay al hover */
+.producto-card:hover .galeria-hover { opacity: 1; pointer-events: auto; }
+
+/* carrusel: superponer imágenes y mostrar solo active */
+.carrusel-imagenes { position: relative; width: 100%; height: 100%; }
+.carrusel-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+.carrusel-img.active { opacity: 1; }
+
+/* flechas */
+.prev-btn, .next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.45);
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 50;
+}
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+/* carrito: imagenes más pequeñas */
+.carrito-item-img img { width: 90px; height: 90px; object-fit: cover; }
+
+/* boton eliminar estilo */
+.btn-eliminar {
+    background: transparent;
+    border: none;
+    color: #d63031;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+/* resumen: botón Continuar compra con marco */
+.btn-confirmar {
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px 16px;
+    background: #008c44;
+    color: white;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+/* ===========================================
+   CARRUSEL INDEX – REDUCIR TAMAÑO IMÁGENES
+=========================================== */
+
+.lista-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.producto img {
+    width: 100%;
+    max-width: 220px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ocultar badge si 0 */
+.carrito-badge { display: inline-flex; align-items:center; justify-content:center; }

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pedido Realizado - Maiprot{% endblock %}
+
+{% block content %}
+
+<div class="pedido-wrapper">
+
+    <h2 class="pedido-titulo"><i class="fa-solid fa-check-circle"></i> Pedido Realizado</h2>
+
+    <div class="pedido-resumen">
+
+        <p><strong>Número de pedido:</strong> {{ pedido.id }}</p>
+        <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+        <p><strong>Monto total:</strong> ${{ pedido.monto_total|floatformat:0 }}</p>
+        <p><strong>Estado:</strong> {{ pedido.estado }}</p>
+
+        <hr>
+
+        <h3>Productos incluidos</h3>
+
+        <ul class="pedido-lista">
+            {% for d in detalles %}
+            <li class="pedido-item">
+                <strong>{{ d.cantidad }}x</strong> {{ d.producto.nombre }}  
+                — ${{ d.subtotal|floatformat:0 }}
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="pedido-botones">
+            <a href="{% url 'catalogo' %}" class="btn-volver">Volver al Catálogo</a>
+            <a href="{% url 'inicio' %}" class="btn-inicio">Ir al Inicio</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Panel de Administración{% endblock %}
+{% block content %}
+<h2>Panel del Administrador</h2>
+<table border="1">
+  <tr>
+    <th>Usuario</th>
+    <th>Producto</th>
+    <th>Cantidad</th>
+    <th>Fecha</th>
+    <th>Estado</th>
+  </tr>
+  {% for p in pedidos %}
+  <tr>
+    <td>{{ p.usuario.username }}</td>
+    <td>{{ p.producto.nombre }}</td>
+    <td>{{ p.cantidad }}</td>
+    <td>{{ p.fecha_pedido }}</td>
+    <td>{{ p.estado }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

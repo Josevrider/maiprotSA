@@ -1,0 +1,37 @@
+<div class="detalle-cliente">
+    <p><strong>Cliente:</strong> {{ factura.pedido.usuario.username }}</p>
+    <p><strong>Fecha de Pedido:</strong> {{ factura.pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
+    <p><strong>Estado del Pedido:</strong> {{ factura.pedido.estado }}</p>
+</div>
+
+<hr>
+
+<h3>Productos Incluidos:</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detalle in detalles %}
+        <tr>
+            <td>{{ detalle.producto.nombre }}</td>
+            <td>{{ detalle.cantidad }}</td>
+            <td>${{ detalle.precio_unitario_guardado }}</td>
+            <td>${{ detalle.subtotal }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+<div class="detalle-factura">
+    <p><strong>Fecha de Emisión:</strong> {{ factura.fecha_emision|date:"d/m/Y H:i" }}</p>
+    <p><strong>Monto Total de la Factura:</strong> <strong style="font-size: 1.2em;">${{ factura.monto_total }}</strong></p>
+    </div>
+    
