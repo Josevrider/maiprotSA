@@ -1,7 +1,8 @@
-# Imagen base de Python
 FROM python:3.12-slim
 
-# Instalar dependencias del sistema necesarias para WeasyPrint
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     libffi-dev \
@@ -14,24 +15,20 @@ RUN apt-get update && apt-get install -y \
     shared-mime-info \
     && apt-get clean
 
-# Crear carpeta de la app
 WORKDIR /app
 
-# Copiar requerimientos
 COPY requirements.txt .
 
-# Instalar dependencias Python
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copiar todo el proyecto
 COPY . .
 
-# Colectar archivos estáticos
+# Nuevo WORKDIR donde está manage.py
+WORKDIR /app/maiprot
+
 RUN python manage.py collectstatic --noinput
 
-# Exponer puerto
 EXPOSE 8000
 
-# Comando para iniciar el servidor
 CMD ["gunicorn", "maiprot.wsgi:application", "--bind", "0.0.0.0:8000"]
