@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [
     '.local',   
     '10.180.137.185', 
     '10.56.16.43',
+    'your-service.onrender.com'
 
 ]
 
@@ -174,4 +175,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CSRF_TRUSTED_ORIGINS = [
     "https://cautious-engine-pjrw5r4g7qx4cqr4-8000.app.github.dev",
+    "https://maiprot.onrender.com",
+    "https://maiprot.cl",
+    "https://www.maiprot.cl",
+
 ]
