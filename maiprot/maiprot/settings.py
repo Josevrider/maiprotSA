@@ -169,3 +169,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'TU_CORREO@gmail.com'
 EMAIL_HOST_PASSWORD = 'TU_CONTRASEÑA_O_APP_PASSWORD'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://cautious-engine-pjrw5r4g7qx4cqr4-8000.app.github.dev",
+]

@@ -1,0 +1,11 @@
+Django>=4.2,<5
+djangorestframework
+django-cors-headers
+django-filter
+django-environ
+pillow
+drf-spectacular
+drf-spectacular-sidecar
+weasyprint
+gunicorn
+psycopg2-binary
