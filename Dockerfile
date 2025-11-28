@@ -1,7 +1,7 @@
 # Imagen base de Python
 FROM python:3.12-slim
 
-# Instalar dependencias del sistema (necesarias para WeasyPrint)
+# Instalar dependencias del sistema necesarias para WeasyPrint
 RUN apt-get update && apt-get install -y \
     build-essential \
     libffi-dev \
@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y \
     libcairo2-dev \
     libpango-1.0-0 \
     libpango1.0-dev \
-    libgdk-pixbuf2.0-0 \
-    libgdk-pixbuf2.0-dev \
+    libgdk-pixbuf-2.0-0 \
+    libgdk-pixbuf-2.0-dev \
     shared-mime-info \
     && apt-get clean
 
