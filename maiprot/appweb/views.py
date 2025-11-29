@@ -8,6 +8,7 @@ from .models import PerfilUsuario
 from django.db.models import Sum, F
 from django.http import JsonResponse
 
+
 # -----------------------------------------------------
 # VISTAS BASE DEL PROYECTO MAIPROT
 # -----------------------------------------------------
@@ -35,14 +36,14 @@ def registro(request):
             user.save()
             
             # Redirección: Llevar al usuario a la página de login con mensaje de éxito
-            messages.success(request, 'Registro exitoso. ¡Inicia sesión ahora!')
+            messages.success(request, "🎉 ¡Registro exitoso! Ahora puedes iniciar sesión.")
             return redirect('login') 
         else:
             # Añadir mensajes de error si el formulario no es válido
             for field, errors in form.errors.items():
                 for error in errors:
                     # Se muestra el error al usuario
-                    messages.error(request, f"Error en {field}: {error}")
+                    messages.error(request, f"⚠️ Error en {field}: {error}")
     
     else:
         form = RegistroForm()
@@ -50,7 +51,6 @@ def registro(request):
     return render(request, 'registro.html', {'form': form})
 
 def login_usuario(request):
-    """Maneja el inicio de sesión."""
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -58,19 +58,23 @@ def login_usuario(request):
         
         if user is not None:
             login(request, user)
-            messages.info(request, f"¡Bienvenido de vuelta, {user.first_name}!")
-            return redirect('inicio') # Redirige a donde desees después del login
+
+            nombre = user.first_name if user.first_name else user.username
+            messages.success(request, f"¡Nos alegra verte de nuevo, {nombre}! 👋")
+
+            return redirect('inicio')
         else:
-            messages.error(request, 'Usuario o contraseña incorrectos.')
+            messages.error(request, '❌ Usuario o contraseña incorrectos.')
             
     return render(request, 'login.html')
 
+
 @login_required
 def logout_usuario(request):
-    """Maneja el cierre de sesión."""
-    messages.info(request, "Sesión cerrada. ¡Vuelve pronto!")
+    messages.info(request, "Has cerrado sesión correctamente. ¡Te esperamos pronto! 👋")
     logout(request)
-    return redirect('inicio') # Redirige a inicio después del logout
+    return redirect('inicio')
+
 
 # -----------------------------------------------------
 # VISTAS DE PERFIL DEL USUARIO (NUEVAS)
@@ -100,7 +104,7 @@ def editar_perfil(request):
             user_form.save()
             perfil_form.save()
             
-            messages.success(request, 'Tu perfil ha sido actualizado exitosamente.')
+            messages.success(request, "✔️ Tu perfil fue actualizado correctamente.")
             return redirect('ver_perfil')
         else:
             messages.error(request, 'Hubo errores en la información. Por favor, revisa ambos formularios.')
@@ -240,7 +244,7 @@ def agregar_carrito(request, producto_id):
 
     item.save()
 
-    messages.success(request, f"{producto.nombre} agregado al carrito.")
+    messages.success(request, f"🛒 {producto.nombre} fue agregado a tu carrito.")
 
     return redirect("catalogo")
 
@@ -256,7 +260,7 @@ def eliminar_item_carrito(request, item_id):
     """Elimina un solo item del carrito."""
     item = get_object_or_404(ItemCarrito, id=item_id, carrito__usuario=request.user)
     item.delete()
-    messages.info(request, "Producto eliminado del carrito.")
+    messages.warning(request, "🗑️ El producto fue eliminado del carrito.")
     return redirect("ver_carrito")
 
 
@@ -265,7 +269,7 @@ def vaciar_carrito(request):
     """Vacía el carrito completamente."""
     carrito, _ = Carrito.objects.get_or_create(usuario=request.user)
     carrito.items.all().delete()
-    messages.info(request, "Carrito vaciado.")
+    messages.warning(request, "🛒 Tu carrito se vació completamente.")
     return redirect("ver_carrito")
 
 @login_required
@@ -303,6 +307,7 @@ def realizar_pedido(request):
         carrito.items.all().delete()
 
         # Redirigir a resumen del pedido
+        messages.success(request, f"📦 Tu pedido #{pedido.id} ha sido generado exitosamente.")
         return redirect('ver_pedido', pedido.id)
 
     # ⬇⬇⬇ ESTA PARTE ES LA CLAVE: enviamos todo al template

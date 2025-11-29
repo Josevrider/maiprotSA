@@ -83,16 +83,17 @@
       </div>
   </header>
 
-  <!-- MENSAJES FLASH -->
-  {% if messages %}
-  <div class="container-mensajes">
+ <!-- MENSAJES FLASH (TOASTS MODERNOS) -->
+{% if messages %}
+<div class="toast-container">
     {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">
-        {{ message }}
-      </div>
+        <div class="toast-message toast-{{ message.tags }}">
+            {{ message }}
+        </div>
     {% endfor %}
-  </div>
-  {% endif %}
+</div>
+{% endif %}
+
 
   <!-- CONTENIDO PRINCIPAL -->
   <main>

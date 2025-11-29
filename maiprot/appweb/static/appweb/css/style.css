@@ -820,3 +820,40 @@ footer {
 
 /* ocultar badge si 0 */
 .carrito-badge { display: inline-flex; align-items:center; justify-content:center; }
+
+/* ============================
+   TOASTS DE NOTIFICACIÓN
+   ============================ */
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast-message {
+    background: #2b89d9;
+    color: white;
+    padding: 14px 22px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0;
+    animation: toastFade 4s ease forwards;
+    font-size: 15px;
+}
+
+/* Colores según tipo de mensaje */
+.toast-success { background: #28a745; }
+.toast-error { background: #dc3545; }
+.toast-warning { background: #ffc107; color: #000; }
+.toast-info { background: #17a2b8; }
+
+/* Animación */
+@keyframes toastFade {
+    0% { opacity: 0; transform: translateY(-20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
