@@ -9,3 +9,4 @@ drf-spectacular-sidecar
 weasyprint
 gunicorn
 psycopg2-binary
+dj-database-url
