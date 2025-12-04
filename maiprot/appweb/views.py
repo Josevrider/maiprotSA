@@ -27,28 +27,40 @@ def catalogo(request):
 # -----------------------------------------------------
 
 def registro(request):
-    """Maneja el registro de nuevos usuarios."""
+    """Registro con RUT como username y validación completa."""
     if request.method == 'POST':
         form = RegistroForm(request.POST)
+
         if form.is_valid():
+            # Crear el usuario sin guardar aún
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
+
+            # El username será el RUT validado
+            user.username = form.cleaned_data["rut"]
+
+            # Guardar la contraseña correctamente
+            user.set_password(form.cleaned_data["password"])
             user.save()
-            
-            # Redirección: Llevar al usuario a la página de login con mensaje de éxito
-            messages.success(request, "🎉 ¡Registro exitoso! Ahora puedes iniciar sesión.")
-            return redirect('login') 
+
+            # Mensaje bonito
+            messages.success(
+                request,
+                "🎉 ¡Tu cuenta fue creada exitosamente! Ahora puedes iniciar sesión."
+            )
+
+            return redirect('login')
+
         else:
-            # Añadir mensajes de error si el formulario no es válido
+            # Mostrar errores uno por uno
             for field, errors in form.errors.items():
                 for error in errors:
-                    # Se muestra el error al usuario
-                    messages.error(request, f"⚠️ Error en {field}: {error}")
-    
+                    messages.error(request, f"⚠️ {error}")
+
     else:
         form = RegistroForm()
-        
+
     return render(request, 'registro.html', {'form': form})
+
 
 def login_usuario(request):
     if request.method == 'POST':
