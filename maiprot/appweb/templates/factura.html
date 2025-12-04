@@ -1,37 +1,108 @@
-<div class="detalle-cliente">
-    <p><strong>Cliente:</strong> {{ factura.pedido.usuario.username }}</p>
-    <p><strong>Fecha de Pedido:</strong> {{ factura.pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
-    <p><strong>Estado del Pedido:</strong> {{ factura.pedido.estado }}</p>
-</div>
+<style>
+    .factura-container {
+        width: 90%;
+        max-width: 900px;
+        margin: auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        font-family: Arial, sans-serif;
+    }
 
-<hr>
+    .factura-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
 
-<h3>Productos Incluidos:</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for detalle in detalles %}
-        <tr>
-            <td>{{ detalle.producto.nombre }}</td>
-            <td>{{ detalle.cantidad }}</td>
-            <td>${{ detalle.precio_unitario_guardado }}</td>
-            <td>${{ detalle.subtotal }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+    th {
+        background: #f5f5f5;
+        font-weight: bold;
+    }
 
-<hr>
+    .total-box {
+        text-align: right;
+        margin-top: 20px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #0a3d62;
+    }
 
-<div class="detalle-factura">
-    <p><strong>Fecha de Emisión:</strong> {{ factura.fecha_emision|date:"d/m/Y H:i" }}</p>
-    <p><strong>Monto Total de la Factura:</strong> <strong style="font-size: 1.2em;">${{ factura.monto_total }}</strong></p>
+    .transferencia-box {
+        background: #f7faff;
+        border: 1px solid #cfe2ff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 30px;
+    }
+
+    .transferencia-box h3 {
+        margin-top: 0;
+        color: #0a3d62;
+    }
+
+</style>
+
+<div class="factura-container">
+
+    <div class="factura-header">
+        <h2>Factura Nº {{ factura.id }}</h2>
+        <p><strong>Emitida el:</strong> {{ factura.fecha_emision|date:"d/m/Y H:i" }}</p>
     </div>
-    
+
+    <div class="detalle-cliente">
+        <p><strong>Cliente:</strong> {{ factura.pedido.usuario.first_name }} {{ factura.pedido.usuario.last_name }}</p>
+        <p><strong>RUT:</strong> {{ factura.pedido.usuario.username }}</p>
+        <p><strong>Fecha del Pedido:</strong> {{ factura.pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
+        <p><strong>Estado del Pedido:</strong> {{ factura.pedido.estado }}</p>
+    </div>
+
+    <hr>
+
+    <h3>Productos Incluidos</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in detalles %}
+            <tr>
+                <td>{{ d.producto.nombre }}</td>
+                <td>{{ d.cantidad }}</td>
+                <td>{{ d.precio_formateado }}</td>
+                <td>{{ d.subtotal_formateado }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-box">
+        Total a Pagar: {{ total_formateado }}
+    </div>
+
+    <div class="transferencia-box">
+        <h3>Datos para Transferencia</h3>
+        <p><strong>Nombre:</strong> Maiprot SpA</p>
+        <p><strong>RUT:</strong> 77.777.777-7</p>
+        <p><strong>Banco:</strong> Banco Estado</p>
+        <p><strong>Cuenta:</strong> Cuenta Vista Nº 123456789</p>
+        <p><strong>Correo para confirmar pago:</strong> pagos@maiprot.cl</p>
+    </div>
+
+</div>

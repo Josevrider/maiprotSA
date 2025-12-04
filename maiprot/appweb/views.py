@@ -9,6 +9,15 @@ from django.db.models import Sum, F
 from django.http import JsonResponse
 
 
+# ============================
+# FORMATEAR MONTOS A CLP
+# ============================
+def formatear_clp(valor):
+    try:
+        return f"${valor:,.0f}".replace(",", ".")
+    except:
+        return valor
+    
 # -----------------------------------------------------
 # VISTAS BASE DEL PROYECTO MAIPROT
 # -----------------------------------------------------
@@ -89,7 +98,7 @@ def logout_usuario(request):
 
 
 # -----------------------------------------------------
-# VISTAS DE PERFIL DEL USUARIO (NUEVAS)
+# VISTAS DE PERFIL DEL USUARIO 
 # -----------------------------------------------------
 
 @login_required
@@ -104,8 +113,7 @@ def editar_perfil(request):
     y sus datos adicionales (modelo PerfilUsuario) simultáneamente.
     """
     
-    # Asumimos que la señal ya creó el perfil de forma segura
-    # No necesitamos try/except aquí.
+  
     perfil_usuario = request.user.perfilusuario
         
     if request.method == 'POST':
@@ -212,26 +220,37 @@ def generar_factura(request, pedido_id):
     messages.success(request, f'Factura N°{factura.id} generada con éxito para el Pedido {pedido_id}.')
     return redirect('ver_factura', factura_id=factura.id)
 
+
 # -----------------------------------------------------
 #   CÓDIGO PARA VER LA FACTURA
 # -----------------------------------------------------
 
 @login_required
 def ver_factura(request, factura_id):
-    """Muestra la factura generada."""
+    """Muestra la factura generada con montos formateados."""
+
     try:
-        # 1. Obtener la factura, verificando que pertenezca al usuario
         factura = Factura.objects.get(id=factura_id, pedido__usuario=request.user)
-        # Los detalles del pedido se obtienen a través de factura.pedido.detalles.all()
     except Factura.DoesNotExist:
         messages.error(request, 'Factura no encontrada o no autorizada.')
         return redirect('pedidos')
-        
+
+    detalles = factura.pedido.detalles.all()
+
+    # Agregar valores formateados a cada detalle
+    for d in detalles:
+        d.precio_formateado = formatear_clp(d.precio_unitario_guardado)
+        subtotal = d.cantidad * d.precio_unitario_guardado
+        d.subtotal_formateado = formatear_clp(subtotal)
+
     contexto = {
         'factura': factura,
-        'detalles': factura.pedido.detalles.all() 
+        'detalles': detalles,
+        'total_formateado': formatear_clp(factura.monto_total)
     }
-    return render(request, 'factura.html', contexto) 
+
+    return render(request, 'factura.html', contexto)
+
 
 # -----------------------------------------------------
 #  CARRITO DE COMPRAS (CORREGIDO Y COMPLETO)
