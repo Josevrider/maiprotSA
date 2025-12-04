@@ -23,7 +23,7 @@ def clp(monto):
 
 
 # =====================================================
-# ACCIÓN ADMIN: Generar PDF de Factura
+# ACCIÓN ADMIN: Generar PDF de la Factura
 # =====================================================
 @admin.action(description='Generar PDF de la Factura')
 def generar_pdf_factura(modeladmin, request, queryset):
@@ -50,7 +50,7 @@ class ImagenProductoInline(admin.TabularInline):
 
 
 # =====================================================
-# INLINE: Detalles del Pedido (para visualizar productos)
+# INLINE: Detalles del Pedido (solo dentro de Pedido)
 # =====================================================
 class DetallePedidoInline(admin.TabularInline):
     model = DetallePedido
@@ -79,21 +79,8 @@ class PedidoAdmin(admin.ModelAdmin):
 
 
 # =====================================================
-# ADMIN Factura – muestra productos y totales CLP
+# ADMIN Factura – SIN inline incorrecto, ahora campo de lectura
 # =====================================================
-class FacturaDetalleInline(admin.TabularInline):
-    model = DetallePedido
-    extra = 0
-    can_delete = False
-    readonly_fields = ('producto', 'cantidad', 'precio_unitario_guardado', 'subtotal_format')
-
-    def subtotal_format(self, obj):
-        return clp(obj.subtotal)
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-
 @admin.register(Factura)
 class FacturaAdmin(admin.ModelAdmin):
     list_display = ('id', 'pedido_link', 'fecha_emision', 'total_format', 'estado')
@@ -101,7 +88,28 @@ class FacturaAdmin(admin.ModelAdmin):
     search_fields = ('pedido__usuario__username', 'id')
     actions = [generar_pdf_factura]
 
-    inlines = [FacturaDetalleInline]
+    readonly_fields = ('detalles_pedido',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('pedido', 'fecha_emision', 'monto_total', 'estado')
+        }),
+        ("Detalles del Pedido", {
+            'fields': ('detalles_pedido',),
+        }),
+    )
+
+    def detalles_pedido(self, obj):
+        """
+        Muestra los productos incluidos en el pedido asociado a la factura.
+        """
+        html = "<ul>"
+        for d in obj.pedido.detalles.all():
+            html += f"<li>{d.cantidad} x {d.producto.nombre} — {clp(d.subtotal)}</li>"
+        html += "</ul>"
+        return mark_safe(html)
+
+    detalles_pedido.short_description = "Productos del Pedido"
 
     def pedido_link(self, obj):
         url = reverse("admin:appweb_pedido_change", args=[obj.pedido.id])
