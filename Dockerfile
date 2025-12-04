@@ -24,14 +24,11 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-# Migraciones
-RUN python maiprot/manage.py migrate --noinput
+WORKDIR /app/maiprot
 
-# Crear superusuario automáticamente
-RUN python maiprot/manage.py shell < maiprot/create_superuser.py
 
-# Static files
-RUN python maiprot/manage.py collectstatic --noinput
+
+RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
