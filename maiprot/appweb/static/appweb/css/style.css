@@ -878,3 +878,58 @@ footer {
         transform: translateX(30px);
     }
 }
+
+/* =====================================================
+      FOOTER RESPONSIVE Y QUE SE PEGUE ABAJO
+===================================================== */
+
+/* Fuerza a que el footer siempre esté abajo */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Empuja el footer hacia abajo */
+main {
+    flex: 1;
+}
+
+/* FOOTER GENERAL */
+footer {
+    width: 100%;
+    padding: 18px 15px;
+    background-color: #0f1f36;
+    color: white;
+    text-align: center;
+    font-size: 14px;
+    line-height: 18px;
+    box-sizing: border-box;
+}
+
+/* RESPONSIVO PARA CELULARES */
+@media (max-width: 600px) {
+    footer {
+        font-size: 12px;
+        padding: 12px 8px;
+    }
+}
+
+/* =====================================================
+      GRID RESPONSIVE PARA EL CATÁLOGO
+===================================================== */
+
+.productos-grid,
+.lista-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 22px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
