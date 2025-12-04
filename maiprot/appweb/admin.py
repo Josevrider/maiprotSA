@@ -28,7 +28,7 @@ def clp(monto):
 @admin.action(description='Generar PDF de la Factura')
 def generar_pdf_factura(modeladmin, request, queryset):
     factura = queryset.first()
-    
+
     if not factura:
         modeladmin.message_user(request, "Selecciona una factura.", level='error')
         return redirect('admin:appweb_factura_changelist')
@@ -42,7 +42,7 @@ def generar_pdf_factura(modeladmin, request, queryset):
 
 
 # =====================================================
-# INLINE: Imágenes adicionales de producto
+# INLINE: Imágenes adicionales
 # =====================================================
 class ImagenProductoInline(admin.TabularInline):
     model = ImagenProducto
@@ -50,7 +50,7 @@ class ImagenProductoInline(admin.TabularInline):
 
 
 # =====================================================
-# INLINE: Detalles del Pedido
+# INLINE: Detalles Pedido
 # =====================================================
 class DetallePedidoInline(admin.TabularInline):
     model = DetallePedido
@@ -63,14 +63,13 @@ class DetallePedidoInline(admin.TabularInline):
 
 
 # =====================================================
-# ADMIN Pedido – mostrando productos incluidos
+# ADMIN Pedido
 # =====================================================
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
     list_display = ('id', 'usuario', 'fecha_pedido', 'estado', 'total_format')
     list_filter = ('estado', 'fecha_pedido')
     search_fields = ('usuario__username', 'id')
-
     inlines = [DetallePedidoInline]
 
     def total_format(self, obj):
@@ -79,7 +78,7 @@ class PedidoAdmin(admin.ModelAdmin):
 
 
 # =====================================================
-# ADMIN Factura – selección del pedido → recarga automática
+# ADMIN Factura – con protección anticrash
 # =====================================================
 @admin.register(Factura)
 class FacturaAdmin(admin.ModelAdmin):
@@ -90,11 +89,11 @@ class FacturaAdmin(admin.ModelAdmin):
 
     readonly_fields = ('detalles_pedido', 'total_pedido_preview')
 
-    # Incluir el archivo JS para recarga automática
+    # JS para recargar al seleccionar pedido
     class Media:
         js = ("admin/factura_auto_reload.js",)
 
-    # Para poder acceder al request dentro del admin
+    # Guardar request actual
     def get_form(self, request, obj=None, **kwargs):
         self._current_request = request
         return super().get_form(request, obj, **kwargs)
@@ -114,9 +113,9 @@ class FacturaAdmin(admin.ModelAdmin):
         }),
     )
 
-    # ---------------------------------------------------------
-    # Mostrar total del pedido ANTES de guardar
-    # ---------------------------------------------------------
+    # ================================
+    # Mostrar total ANTES de guardar
+    # ================================
     def total_pedido_preview(self, obj):
         pedido_id = None
 
@@ -135,9 +134,9 @@ class FacturaAdmin(admin.ModelAdmin):
 
     total_pedido_preview.short_description = "Total del Pedido"
 
-    # ---------------------------------------------------------
-    # Mostrar productos del pedido antes de guardar
-    # ---------------------------------------------------------
+    # ======================================
+    # Mostrar productos ANTES de guardar
+    # ======================================
     def detalles_pedido(self, obj):
         pedido_id = None
 
@@ -160,15 +159,28 @@ class FacturaAdmin(admin.ModelAdmin):
 
     detalles_pedido.short_description = "Productos del Pedido"
 
-    # Enlace al pedido
+    # ================================
+    # Link al pedido – anticrash
+    # ================================
     def pedido_link(self, obj):
-        url = reverse("admin:appweb_pedido_change", args=[obj.pedido.id])
-        return mark_safe(f'<a href="{url}">Pedido N°{obj.pedido.id}</a>')
+        if not obj.pedido_id:
+            return "— (sin pedido)"
+        try:
+            url = reverse("admin:appweb_pedido_change", args=[obj.pedido.id])
+            return mark_safe(f'<a href="{url}">Pedido N°{obj.pedido.id}</a>')
+        except:
+            return "— (pedido inválido)"
     pedido_link.short_description = "Pedido"
 
-    # Total en la tabla
+    # ================================
+    # Total formateado – anticrash
+    # ================================
     def total_format(self, obj):
-        return clp(obj.monto_total)
+        try:
+            return clp(obj.monto_total or 0)
+        except:
+            return "$0"
+
     total_format.short_description = "Total Factura"
 
 
