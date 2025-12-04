@@ -79,7 +79,7 @@ class PedidoAdmin(admin.ModelAdmin):
 
 
 # =====================================================
-# ADMIN Factura – con vista previa de productos y total
+# ADMIN Factura – selección del pedido → recarga automática
 # =====================================================
 @admin.register(Factura)
 class FacturaAdmin(admin.ModelAdmin):
@@ -90,7 +90,11 @@ class FacturaAdmin(admin.ModelAdmin):
 
     readonly_fields = ('detalles_pedido', 'total_pedido_preview')
 
-    # Para poder leer el pedido seleccionado en modo "Add"
+    # Incluir el archivo JS para recarga automática
+    class Media:
+        js = ("admin/factura_auto_reload.js",)
+
+    # Para poder acceder al request dentro del admin
     def get_form(self, request, obj=None, **kwargs):
         self._current_request = request
         return super().get_form(request, obj, **kwargs)
@@ -111,16 +115,14 @@ class FacturaAdmin(admin.ModelAdmin):
     )
 
     # ---------------------------------------------------------
-    # Mostrar total del pedido ANTES de guardar la factura
+    # Mostrar total del pedido ANTES de guardar
     # ---------------------------------------------------------
     def total_pedido_preview(self, obj):
         pedido_id = None
 
-        # Caso factura existente
         if obj and obj.pedido_id:
             pedido_id = obj.pedido_id
 
-        # Caso "Add Factura": obtener el pedido seleccionado
         if not pedido_id and hasattr(self, "_current_request"):
             pedido_id = self._current_request.GET.get("pedido")
 
@@ -134,16 +136,14 @@ class FacturaAdmin(admin.ModelAdmin):
     total_pedido_preview.short_description = "Total del Pedido"
 
     # ---------------------------------------------------------
-    # Mostrar los productos del pedido incluso antes de guardar
+    # Mostrar productos del pedido antes de guardar
     # ---------------------------------------------------------
     def detalles_pedido(self, obj):
         pedido_id = None
 
-        # Caso factura guardada
         if obj and obj.pedido_id:
             pedido_id = obj.pedido_id
 
-        # Caso "Add Factura"
         if not pedido_id and hasattr(self, "_current_request"):
             pedido_id = self._current_request.GET.get("pedido")
 
@@ -160,15 +160,13 @@ class FacturaAdmin(admin.ModelAdmin):
 
     detalles_pedido.short_description = "Productos del Pedido"
 
-    # ---------------------------------------------------------
-    # Link para abrir el pedido desde la factura
-    # ---------------------------------------------------------
+    # Enlace al pedido
     def pedido_link(self, obj):
         url = reverse("admin:appweb_pedido_change", args=[obj.pedido.id])
         return mark_safe(f'<a href="{url}">Pedido N°{obj.pedido.id}</a>')
     pedido_link.short_description = "Pedido"
 
-    # Mostrar total formateado en lista
+    # Total en la tabla
     def total_format(self, obj):
         return clp(obj.monto_total)
     total_format.short_description = "Total Factura"
