@@ -1,77 +1,135 @@
 from django.contrib import admin
-from .models import Producto, Pedido, Factura, PerfilUsuario, DetallePedido, ImagenProducto, BannerPromocional 
-
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from django.urls import reverse
-from django.utils.safestring import mark_safe
 from weasyprint import HTML
-from django.conf import settings
-from django.db.models import Sum
 
-# -----------------------------------------------------
-# ACCIÓN PERSONALIZADA DE WEASYPRINT
-# -----------------------------------------------------
+from .models import (
+    Producto, Pedido, Factura, PerfilUsuario,
+    DetallePedido, ImagenProducto, BannerPromocional
+)
 
+# =====================================================
+# UTILIDAD: Formateo CLP sin decimales
+# =====================================================
+def clp(monto):
+    try:
+        monto = int(round(float(monto)))
+        return f"$ {monto:,}".replace(",", ".")
+    except:
+        return monto
+
+
+# =====================================================
+# ACCIÓN ADMIN: Generar PDF de Factura
+# =====================================================
 @admin.action(description='Generar PDF de la Factura')
 def generar_pdf_factura(modeladmin, request, queryset):
-    factura = queryset.first() 
+    factura = queryset.first()
     
     if not factura:
-        modeladmin.message_user(request, "Por favor, selecciona al menos una factura.", level='error')
+        modeladmin.message_user(request, "Selecciona una factura.", level='error')
         return redirect('admin:appweb_factura_changelist')
 
-
     html_string = render_to_string('factura_pdf.html', {'factura': factura})
-    
+    pdf = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf()
 
-    html = HTML(string=html_string, base_url=request.build_absolute_uri())
-    
-    pdf_file = html.write_pdf()
-
-   
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="Factura_{factura.id}_{factura.pedido.usuario.username}.pdf"'
-    
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Factura_{factura.id}.pdf"'
     return response
 
-# -------------------------------------------------------------------
-# INLINE PARA IMÁGENES ADICIONALES DE PRODUCTO
-# -------------------------------------------------------------------
+
+# =====================================================
+# INLINE: Imágenes adicionales de producto
+# =====================================================
 class ImagenProductoInline(admin.TabularInline):
     model = ImagenProducto
     extra = 1
 
-# -------------------------------------------------------------------
-# REGISTRO DE MODELOS USANDO DECORADOR @admin.register
-# -------------------------------------------------------------------
+
+# =====================================================
+# INLINE: Detalles del Pedido (para visualizar productos)
+# =====================================================
+class DetallePedidoInline(admin.TabularInline):
+    model = DetallePedido
+    extra = 0
+    readonly_fields = ('producto', 'cantidad', 'precio_unitario_guardado', 'subtotal_format')
+
+    def subtotal_format(self, obj):
+        return clp(obj.subtotal)
+    subtotal_format.short_description = "Subtotal"
+
+
+# =====================================================
+# ADMIN Pedido – mostrando productos incluidos
+# =====================================================
+@admin.register(Pedido)
+class PedidoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'usuario', 'fecha_pedido', 'estado', 'total_format')
+    list_filter = ('estado', 'fecha_pedido')
+    search_fields = ('usuario__username', 'id')
+
+    inlines = [DetallePedidoInline]
+
+    def total_format(self, obj):
+        return clp(obj.total_pedido)
+    total_format.short_description = "Total Pedido"
+
+
+# =====================================================
+# ADMIN Factura – muestra productos y totales CLP
+# =====================================================
+class FacturaDetalleInline(admin.TabularInline):
+    model = DetallePedido
+    extra = 0
+    can_delete = False
+    readonly_fields = ('producto', 'cantidad', 'precio_unitario_guardado', 'subtotal_format')
+
+    def subtotal_format(self, obj):
+        return clp(obj.subtotal)
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(Factura)
 class FacturaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'pedido_link', 'fecha_emision', 'monto_total', 'estado')
+    list_display = ('id', 'pedido_link', 'fecha_emision', 'total_format', 'estado')
     list_filter = ('estado', 'fecha_emision')
     search_fields = ('pedido__usuario__username', 'id')
     actions = [generar_pdf_factura]
-    
-    def pedido_link(self, obj):
-        link = reverse("admin:appweb_pedido_change", args=[obj.pedido.id])
-        return mark_safe(f'<a href="{link}">Pedido N°{obj.pedido.id}</a>')
-    pedido_link.short_description = 'Pedido'
 
-# ✅ REGISTRO DE PRODUCTO CORREGIDO (ÚNICO REGISTRO)
+    inlines = [FacturaDetalleInline]
+
+    def pedido_link(self, obj):
+        url = reverse("admin:appweb_pedido_change", args=[obj.pedido.id])
+        return mark_safe(f'<a href="{url}">Pedido N°{obj.pedido.id}</a>')
+    pedido_link.short_description = "Pedido"
+
+    def total_format(self, obj):
+        return clp(obj.monto_total)
+    total_format.short_description = "Total Factura"
+
+
+# =====================================================
+# ADMIN Producto
+# =====================================================
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'precio', 'descripcion')
+    list_display = ('nombre', 'precio_format', 'descripcion')
     search_fields = ('nombre',)
     inlines = [ImagenProductoInline]
 
-# -------------------------------------------------------------------
-# REGISTROS SIMPLES FALTANTES (usando admin.site.register)
-# -------------------------------------------------------------------
+    def precio_format(self, obj):
+        return clp(obj.precio)
+    precio_format.short_description = "Precio"
 
 
+# =====================================================
+# REGISTROS SIMPLES
+# =====================================================
 admin.site.register(PerfilUsuario)
-admin.site.register(Pedido)
 admin.site.register(DetallePedido)
-
+admin.site.register(BannerPromocional)

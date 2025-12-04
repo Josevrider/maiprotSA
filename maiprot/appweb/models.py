@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.db.models import Sum, F
+
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
@@ -12,6 +14,7 @@ class Producto(models.Model):
 
     def __str__(self):
         return self.nombre
+
 
 class Pedido(models.Model):
     ESTADOS = [
@@ -33,6 +36,18 @@ class Pedido(models.Model):
     def __str__(self):
         return f"Pedido N°{self.id} de {self.usuario.username}"
 
+    @property
+    def total_pedido(self):
+        """
+        Calcula el total del pedido sumando cantidad * precio_unitario_guardado
+        de cada DetallePedido asociado.
+        """
+        total = self.detalles.aggregate(
+            total=Sum(F('cantidad') * F('precio_unitario_guardado'))
+        )['total']
+        return total or 0
+
+
 class DetallePedido(models.Model):
     pedido = models.ForeignKey('Pedido', on_delete=models.CASCADE, related_name='detalles')
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
@@ -45,6 +60,7 @@ class DetallePedido(models.Model):
 
     def __str__(self):
         return f"{self.cantidad} x {self.producto.nombre} en Pedido {self.pedido.id}"
+
 
 class Factura(models.Model):
     ESTADOS = [
@@ -61,6 +77,16 @@ class Factura(models.Model):
     def __str__(self):
         return f"Factura N°{self.id} (Pedido {self.pedido.id})"
 
+    def save(self, *args, **kwargs):
+        """
+        Cada vez que se guarda la factura, si tiene pedido asociado,
+        recalcula el monto_total usando los detalles del pedido.
+        """
+        if self.pedido_id:
+            self.monto_total = self.pedido.total_pedido
+        super().save(*args, **kwargs)
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     foto_perfil = models.ImageField(upload_to='perfiles/', blank=True, null=True)
@@ -70,6 +96,7 @@ class Profile(models.Model):
     def __str__(self):
         return f"Perfil de {self.user.username}"
     
+
 class PerfilUsuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True) 
     direccion = models.CharField(max_length=255, blank=True)
@@ -79,14 +106,17 @@ class PerfilUsuario(models.Model):
     def __str__(self):
         return f"Perfil de {self.user.username}"
     
+
 @receiver(post_save, sender=User)
 def crear_perfil(sender, instance, created, **kwargs):
     if created:
         PerfilUsuario.objects.create(user=instance)
 
+
 @receiver(post_save, sender=User)
 def guardar_perfil(sender, instance, **kwargs):
     instance.perfilusuario.save()
+
 
 class ImagenProducto(models.Model):
     producto = models.ForeignKey(
@@ -99,6 +129,7 @@ class ImagenProducto(models.Model):
 
     def __str__(self):
         return f"Imagen para {self.producto.nombre}"
+
 
 class BannerPromocional(models.Model):
     titulo = models.CharField(max_length=100, help_text="Título o mensaje principal del banner.")
@@ -115,6 +146,7 @@ class BannerPromocional(models.Model):
     def __str__(self):
         return self.titulo
 
+
 class Carrito(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -129,6 +161,7 @@ class ItemCarrito(models.Model):
 
     def subtotal(self):
         return self.cantidad * self.producto.precio
+
 
 @receiver(post_save, sender=User)
 def crear_carrito_usuario(sender, instance, created, **kwargs):
