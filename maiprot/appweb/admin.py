@@ -164,4 +164,33 @@ class FacturaAdmin(admin.ModelAdmin):
     # Link para abrir el pedido desde la factura
     # ---------------------------------------------------------
     def pedido_link(self, obj):
-        url = reverse("admin:appweb_pedido_change", arg
+        url = reverse("admin:appweb_pedido_change", args=[obj.pedido.id])
+        return mark_safe(f'<a href="{url}">Pedido N°{obj.pedido.id}</a>')
+    pedido_link.short_description = "Pedido"
+
+    # Mostrar total formateado en lista
+    def total_format(self, obj):
+        return clp(obj.monto_total)
+    total_format.short_description = "Total Factura"
+
+
+# =====================================================
+# ADMIN Producto
+# =====================================================
+@admin.register(Producto)
+class ProductoAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'precio_format', 'descripcion')
+    search_fields = ('nombre',)
+    inlines = [ImagenProductoInline]
+
+    def precio_format(self, obj):
+        return clp(obj.precio)
+    precio_format.short_description = "Precio"
+
+
+# =====================================================
+# REGISTROS SIMPLES
+# =====================================================
+admin.site.register(PerfilUsuario)
+admin.site.register(DetallePedido)
+admin.site.register(BannerPromocional)
