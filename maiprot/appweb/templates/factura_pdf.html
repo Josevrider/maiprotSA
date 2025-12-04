@@ -16,22 +16,22 @@
             justify-content: space-between; 
             align-items: center; 
             margin-bottom: 30px; 
-            border-bottom: 2px solid #333; /* Línea de separación */
+            border-bottom: 2px solid #333;
             padding-bottom: 10px;
         }
         .header .logo { max-width: 100px; height: auto; }
         .header .info-factura h1 { font-size: 20px; color: #007bff; margin: 0; }
         .header .info-factura p { margin: 2px 0; font-size: 11px; }
 
-        /* Secciones de Datos (Cliente) */
+        /* Secciones */
         .seccion { margin-bottom: 20px; padding: 10px; border: 1px solid #eee; border-radius: 5px; }
         .seccion h2 { font-size: 14px; color: #555; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 0; }
-        
-        /* Tabla de Productos */
+
+        /* Tabla */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f8f9fa; color: #333; font-weight: bold; }
-        
+
         /* Totales */
         .total-box { 
             margin-top: 30px; 
@@ -41,6 +41,31 @@
             border-radius: 5px;
         }
         .total-box h3 { font-size: 16px; margin: 0; color: #333; }
+
+        /* Datos de Transferencia */
+        .transferencia-box {
+            margin-top: 40px;
+            padding: 15px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            background: #f7f7f7;
+        }
+        .transferencia-box h2 {
+            font-size: 14px; 
+            color: #444; 
+            margin-bottom: 10px; 
+            border-bottom: 1px solid #ccc; 
+            padding-bottom: 5px;
+        }
+        .transferencia-box table {
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 10px;
+        }
+        .transferencia-box td {
+            padding: 6px 0;
+        }
+
     </style>
 </head>
 <body>
@@ -53,8 +78,8 @@
             </div>
             <div class="info-factura">
                 <h1>FACTURA N° {{ factura.id }}</h1>
-                <p>Fecha de Emisión: **{{ factura.fecha_emision|date:"d/m/Y H:i" }}**</p>
-                <p>Estado: **{{ factura.estado }}**</p>
+                <p>Fecha de Emisión: {{ factura.fecha_emision|date:"d/m/Y H:i" }}</p>
+                <p>Estado: {{ factura.estado }}</p>
             </div>
         </div>
         
@@ -69,7 +94,6 @@
             {% if factura.pedido.usuario.perfilusuario.telefono %}
                 <p><strong>Teléfono:</strong> {{ factura.pedido.usuario.perfilusuario.telefono }}</p>
             {% endif %}
-            
         </div>
 
         <div class="seccion">
@@ -102,6 +126,40 @@
 
         <div class="total-box">
             <h3>MONTO TOTAL: ${{ factura.monto_total|floatformat:0 }}</h3>
+        </div>
+
+        <!-- NUEVA SECCIÓN: DATOS PARA TRANSFERENCIA -->
+        <div class="transferencia-box">
+            <h2>Datos para Pago por Transferencia</h2>
+            <table>
+                <tr>
+                    <td><strong>Banco:</strong></td>
+                    <td>Banco de Chile</td>
+                </tr>
+                <tr>
+                    <td><strong>Tipo de Cuenta:</strong></td>
+                    <td>Cuenta Corriente</td>
+                </tr>
+                <tr>
+                    <td><strong>N° de Cuenta:</strong></td>
+                    <td>123456789</td>
+                </tr>
+                <tr>
+                    <td><strong>RUT Titular:</strong></td>
+                    <td>11.111.111-1</td>
+                </tr>
+                <tr>
+                    <td><strong>Nombre Titular:</strong></td>
+                    <td>María Rodríguez</td>
+                </tr>
+                <tr>
+                    <td><strong>Correo para Enviar Comprobante:</strong></td>
+                    <td>pagos@maiprot.cl</td>
+                </tr>
+            </table>
+            <p style="margin-top: 10px; font-size: 10px;">
+                *Una vez realizada la transferencia, enviar el comprobante al correo indicado para confirmar el pedido.*
+            </p>
         </div>
 
         <p style="margin-top: 40px; font-size: 9px; text-align: center;">Documento no válido como factura tributaria. Versión de prueba.</p>
