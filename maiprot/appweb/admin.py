@@ -34,10 +34,27 @@ def generar_pdf_factura(modeladmin, request, queryset):
         return redirect('admin:appweb_factura_changelist')
 
     html_string = render_to_string('factura_pdf.html', {'factura': factura})
-    pdf = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf()
+
+    pdf = HTML(
+        string=html_string,
+        base_url=request.build_absolute_uri()
+    ).write_pdf(
+        presentational_hints=True,
+        metadata={
+            "Title": f"Factura {factura.id}",
+            "Author": "Maiprot S.A.",
+            "Subject": "Documento de Facturación",
+            "Creator": "WeasyPrint + Django",
+        }
+    )
 
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="Factura_{factura.id}.pdf"'
+    response['X-Content-Type-Options'] = 'nosniff'
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+
     return response
 
 
