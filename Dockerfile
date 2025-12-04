@@ -3,6 +3,7 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Dependencias necesarias para WeasyPrint
 RUN apt-get update && apt-get install -y \
     build-essential \
     libffi-dev \
@@ -24,10 +25,11 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-# Nuevo WORKDIR donde está manage.py
-WORKDIR /app/maiprot
+# Hacer migraciones ANTES del collectstatic
+RUN python maiprot/manage.py migrate --noinput
 
-RUN python manage.py collectstatic --noinput
+# Ahora sí recopilar estáticos
+RUN python maiprot/manage.py collectstatic --noinput
 
 EXPOSE 8000
 
