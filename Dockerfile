@@ -3,7 +3,6 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Dependencias necesarias para WeasyPrint
 RUN apt-get update && apt-get install -y \
     build-essential \
     libffi-dev \
@@ -25,10 +24,13 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-# Hacer migraciones ANTES del collectstatic
+# Migraciones
 RUN python maiprot/manage.py migrate --noinput
 
-# Ahora sí recopilar estáticos
+# Crear superusuario automáticamente
+RUN python maiprot/manage.py shell < maiprot/create_superuser.py
+
+# Static files
 RUN python maiprot/manage.py collectstatic --noinput
 
 EXPOSE 8000
