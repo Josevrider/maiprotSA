@@ -2,156 +2,110 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Factura N° {{ factura.id }}</title>
+    <title>Documento N° {{ factura.id }}</title>
     <style>
-        body { font-family: 'Arial', sans-serif; font-size: 10px; margin: 20px; }
-        .container { width: 100%; max-width: 800px; margin: 0 auto; }
+        body { font-family: Arial, sans-serif; font-size: 10px; margin: 20px; }
+        .container { width: 100%; max-width: 800px; margin: auto; }
 
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 30px; 
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-        }
-
-        .header .info-factura h1 { font-size: 20px; color: #007bff; margin: 0; }
-        .header .info-factura p { margin: 2px 0; font-size: 11px; }
-
-        .seccion { 
-            margin-bottom: 20px; 
-            padding: 10px; 
-            border: 1px solid #eee; 
-            border-radius: 5px; 
-        }
-
-        .seccion h2 { 
-            font-size: 14px; 
-            color: #555; 
-            border-bottom: 1px solid #ccc; 
-            padding-bottom: 5px; 
-            margin-top: 0; 
-        }
-
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-top: 15px; 
-            font-size: 10px; 
-        }
-
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f8f9fa; color: #333; }
-
-        .total-box { 
-            margin-top: 30px; 
-            padding: 10px; 
-            background-color: #e9ecef; 
-            text-align: right; 
-            border-radius: 5px; 
-        }
-
-        .total-box h3 { font-size: 16px; margin: 0; color: #333; }
-
-        .transferencia-box {
-            margin-top: 40px;
-            padding: 15px;
-            border: 1px solid #bbb;
-            border-radius: 5px;
-            background: #f7f7f7;
-        }
-
-        .transferencia-box h2 {
-            font-size: 14px;
-            color: #444;
-            border-bottom: 1px solid #ccc;
+        .header {
+            border-bottom: 1px solid #444;
+            margin-bottom: 20px;
             padding-bottom: 5px;
         }
 
-        .transferencia-box table td {
-            padding: 6px 0;
+        .seccion {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .total-box {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            text-align: right;
+        }
+
+        .info-pago {
+            margin-top: 25px;
+            padding: 10px;
+            border: 1px solid #bbb;
+            background: #f9f9f9;
+        }
+
+        .info-pago small { font-size: 9px; }
     </style>
 </head>
+
 <body>
     <div class="container">
 
         <div class="header">
-            <div class="info-empresa">
-                <strong>MAIPROT S.A.</strong><br>
-                <small>Facturación Electrónica | R.U.T. 76.543.210-1</small><br>
-                <small>Av. Principal #123, Ciudad | Tel: 22 5555 6666</small>
-            </div>
-            <div class="info-factura">
-                <h1>FACTURA N° {{ factura.id }}</h1>
-                <p>Fecha de Emisión: <strong>{{ factura.fecha_emision|date:"d/m/Y H:i" }}</strong></p>
-                <p>Estado: <strong>{{ factura.estado }}</strong></p>
-            </div>
+            <strong>MAIPROT S.A.</strong><br>
+            <small>Documento generado automáticamente</small>
         </div>
 
         <div class="seccion">
-            <h2>Información del Cliente</h2>
+            <h3>Datos del Cliente</h3>
             <p><strong>Usuario:</strong> {{ factura.pedido.usuario.username }}</p>
-
             {% if factura.pedido.usuario.perfilusuario.direccion %}
                 <p><strong>Dirección:</strong> {{ factura.pedido.usuario.perfilusuario.direccion }}</p>
             {% endif %}
-            
             {% if factura.pedido.usuario.perfilusuario.telefono %}
                 <p><strong>Teléfono:</strong> {{ factura.pedido.usuario.perfilusuario.telefono }}</p>
             {% endif %}
         </div>
 
         <div class="seccion">
-            <h2>Detalles del Pedido (N° {{ factura.pedido.id }})</h2>
+            <h3>Detalles del Pedido</h3>
             <table>
                 <thead>
                     <tr>
                         <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unitario</th>
-                        <th>Subtotal</th>
+                        <th>Cant.</th>
+                        <th>Precio</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for detalle in factura.pedido.detalles.all %}
+                    {% for d in factura.pedido.detalles.all %}
                     <tr>
-                        <td>{{ detalle.producto.nombre }}</td>
-                        <td>{{ detalle.cantidad }}</td>
-                        <td>${{ detalle.precio_unitario_guardado|floatformat:2 }}</td>
-                        <td>${{ detalle.subtotal|floatformat:2 }}</td>
+                        <td>{{ d.producto.nombre }}</td>
+                        <td>{{ d.cantidad }}</td>
+                        <td>${{ d.precio_unitario_guardado }}</td>
+                        <td>${{ d.subtotal }}</td>
                     </tr>
-                    {% empty %}
-                    <tr><td colspan="4">No hay productos en este pedido.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
 
         <div class="total-box">
-            <h3>MONTO TOTAL: ${{ factura.monto_total|floatformat:0 }}</h3>
+            <strong>Total del documento: ${{ factura.monto_total|floatformat:0 }}</strong>
         </div>
 
-        <div class="transferencia-box">
-            <h2>Datos para Pago por Transferencia</h2>
-
-            <table>
-                <tr><td><strong>Banco:</strong></td><td>Banco de Chile</td></tr>
-                <tr><td><strong>Tipo de Cuenta:</strong></td><td>Cuenta Corriente</td></tr>
-                <tr><td><strong>N° de Cuenta:</strong></td><td>123456789</td></tr>
-                <tr><td><strong>RUT Titular:</strong></td><td>11.111.111-1</td></tr>
-                <tr><td><strong>Nombre Titular:</strong></td><td>María Rodríguez</td></tr>
-                <tr><td><strong>Correo:</strong></td><td>pagos@maiprot.cl</td></tr>
-            </table>
-
-            <p style="margin-top: 10px; font-size: 10px;">
-                *Una vez realizada la transferencia, enviar el comprobante al correo indicado.*
-            </p>
+        <div class="info-pago">
+            <h4>Información para confirmar pago</h4>
+            <small>
+                Para continuar con el proceso, debe enviar el comprobante al correo<br>
+                <strong>pagos@maiprot.cl</strong><br><br>
+                La información completa de pago será entregada de forma segura por correo.
+            </small>
         </div>
 
-        <p style="margin-top: 40px; font-size: 9px; text-align: center;">
-            Documento no válido como factura tributaria. Versión de prueba.
+        <p style="text-align:center; margin-top:20px; font-size:9px;">
+            Documento generado por MAIPROT (versión interna).
         </p>
 
     </div>
