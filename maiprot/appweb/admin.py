@@ -50,7 +50,7 @@ class ImagenProductoInline(admin.TabularInline):
 
 
 # =====================================================
-# INLINE: Detalles del Pedido (solo dentro de Pedido)
+# INLINE: Detalles del Pedido
 # =====================================================
 class DetallePedidoInline(admin.TabularInline):
     model = DetallePedido
@@ -79,7 +79,7 @@ class PedidoAdmin(admin.ModelAdmin):
 
 
 # =====================================================
-# ADMIN Factura – SIN inline incorrecto, ahora campo de lectura
+# ADMIN Factura – con vista previa de productos y total
 # =====================================================
 @admin.register(Factura)
 class FacturaAdmin(admin.ModelAdmin):
@@ -88,56 +88,80 @@ class FacturaAdmin(admin.ModelAdmin):
     search_fields = ('pedido__usuario__username', 'id')
     actions = [generar_pdf_factura]
 
-    readonly_fields = ('detalles_pedido',)
+    readonly_fields = ('detalles_pedido', 'total_pedido_preview')
+
+    # Para poder leer el pedido seleccionado en modo "Add"
+    def get_form(self, request, obj=None, **kwargs):
+        self._current_request = request
+        return super().get_form(request, obj, **kwargs)
 
     fieldsets = (
         (None, {
-            'fields': ('pedido', 'fecha_emision', 'monto_total', 'estado')
+            'fields': (
+                'pedido',
+                'fecha_emision',
+                'monto_total',
+                'total_pedido_preview',
+                'estado'
+            )
         }),
         ("Detalles del Pedido", {
             'fields': ('detalles_pedido',),
         }),
     )
 
+    # ---------------------------------------------------------
+    # Mostrar total del pedido ANTES de guardar la factura
+    # ---------------------------------------------------------
+    def total_pedido_preview(self, obj):
+        pedido_id = None
+
+        # Caso factura existente
+        if obj and obj.pedido_id:
+            pedido_id = obj.pedido_id
+
+        # Caso "Add Factura": obtener el pedido seleccionado
+        if not pedido_id and hasattr(self, "_current_request"):
+            pedido_id = self._current_request.GET.get("pedido")
+
+        if pedido_id:
+            pedido = Pedido.objects.filter(id=pedido_id).first()
+            if pedido:
+                return clp(pedido.total_pedido)
+
+        return "Seleccione un pedido"
+
+    total_pedido_preview.short_description = "Total del Pedido"
+
+    # ---------------------------------------------------------
+    # Mostrar los productos del pedido incluso antes de guardar
+    # ---------------------------------------------------------
     def detalles_pedido(self, obj):
-        """
-        Muestra los productos incluidos en el pedido asociado a la factura.
-        """
-        html = "<ul>"
-        for d in obj.pedido.detalles.all():
-            html += f"<li>{d.cantidad} x {d.producto.nombre} — {clp(d.subtotal)}</li>"
-        html += "</ul>"
-        return mark_safe(html)
+        pedido_id = None
+
+        # Caso factura guardada
+        if obj and obj.pedido_id:
+            pedido_id = obj.pedido_id
+
+        # Caso "Add Factura"
+        if not pedido_id and hasattr(self, "_current_request"):
+            pedido_id = self._current_request.GET.get("pedido")
+
+        if pedido_id:
+            pedido = Pedido.objects.filter(id=pedido_id).first()
+            if pedido:
+                html = "<ul>"
+                for d in pedido.detalles.all():
+                    html += f"<li>{d.cantidad} x {d.producto.nombre} — {clp(d.subtotal)}</li>"
+                html += "</ul>"
+                return mark_safe(html)
+
+        return "-"
 
     detalles_pedido.short_description = "Productos del Pedido"
 
+    # ---------------------------------------------------------
+    # Link para abrir el pedido desde la factura
+    # ---------------------------------------------------------
     def pedido_link(self, obj):
-        url = reverse("admin:appweb_pedido_change", args=[obj.pedido.id])
-        return mark_safe(f'<a href="{url}">Pedido N°{obj.pedido.id}</a>')
-    pedido_link.short_description = "Pedido"
-
-    def total_format(self, obj):
-        return clp(obj.monto_total)
-    total_format.short_description = "Total Factura"
-
-
-# =====================================================
-# ADMIN Producto
-# =====================================================
-@admin.register(Producto)
-class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'precio_format', 'descripcion')
-    search_fields = ('nombre',)
-    inlines = [ImagenProductoInline]
-
-    def precio_format(self, obj):
-        return clp(obj.precio)
-    precio_format.short_description = "Precio"
-
-
-# =====================================================
-# REGISTROS SIMPLES
-# =====================================================
-admin.site.register(PerfilUsuario)
-admin.site.register(DetallePedido)
-admin.site.register(BannerPromocional)
+        url = reverse("admin:appweb_pedido_change", arg
