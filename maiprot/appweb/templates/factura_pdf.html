@@ -3,111 +3,195 @@
 <head>
     <meta charset="utf-8">
     <title>Documento N° {{ factura.id }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; font-size: 10px; margin: 20px; }
-        .container { width: 100%; max-width: 800px; margin: auto; }
 
-        .header {
-            border-bottom: 1px solid #444;
-            margin-bottom: 20px;
-            padding-bottom: 5px;
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            font-size: 10px; 
+            margin: 20px; 
         }
 
+        .container { 
+            width: 100%; 
+            max-width: 800px; 
+            margin: auto; 
+        }
+
+        /* Encabezado estilo profesional */
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header-left {
+            float: left;
+            width: 50%;
+            line-height: 14px;
+        }
+
+        .header-right {
+            float: right;
+            width: 45%;
+            text-align: right;
+        }
+
+        .header-right h2 {
+            margin: 0;
+            color: #0066cc;
+            font-size: 18px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #444;
+            margin-top: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Secciones */
         .seccion {
             margin-bottom: 20px;
             padding: 10px;
             border: 1px solid #ddd;
         }
 
+        .seccion h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Tabla */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            font-size: 10px;
         }
 
         th, td {
             padding: 6px;
             border: 1px solid #ccc;
+            text-align: left;
         }
 
+        th {
+            background: #f2f2f2;
+        }
+
+        /* Total */
         .total-box {
             margin-top: 20px;
             padding: 10px;
-            background: #f0f0f0;
+            background: #efefef;
             text-align: right;
+            font-size: 12px;
+            font-weight: bold;
         }
 
-        .info-pago {
+        /* Info adicional */
+        .info-extra {
             margin-top: 25px;
             padding: 10px;
             border: 1px solid #bbb;
-            background: #f9f9f9;
+            background: #fafafa;
+            font-size: 9px;
         }
 
-        .info-pago small { font-size: 9px; }
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 9px;
+            color: #666;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
 
-        <div class="header">
+<div class="container">
+
+    <!-- Encabezado Profesional -->
+    <div class="header">
+        <div class="header-left">
             <strong>MAIPROT S.A.</strong><br>
-            <small>Documento generado automáticamente</small>
+            <small>Facturación Electrónica | R.U.T. 76.543.210-1</small><br>
+            <small>Av. Principal #123, Ciudad | Tel: 22 5555 6666</small>
         </div>
 
-        <div class="seccion">
-            <h3>Datos del Cliente</h3>
-            <p><strong>Usuario:</strong> {{ factura.pedido.usuario.username }}</p>
-            {% if factura.pedido.usuario.perfilusuario.direccion %}
-                <p><strong>Dirección:</strong> {{ factura.pedido.usuario.perfilusuario.direccion }}</p>
-            {% endif %}
-            {% if factura.pedido.usuario.perfilusuario.telefono %}
-                <p><strong>Teléfono:</strong> {{ factura.pedido.usuario.perfilusuario.telefono }}</p>
-            {% endif %}
+        <div class="header-right">
+            <h2>DOCUMENTO N° {{ factura.id }}</h2>
+            <p><strong>Fecha de Emisión:</strong> {{ factura.fecha_emision|date:"d/m/Y H:i" }}</p>
+            <p><strong>Estado:</strong> {{ factura.estado }}</p>
         </div>
 
-        <div class="seccion">
-            <h3>Detalles del Pedido</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Cant.</th>
-                        <th>Precio</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for d in factura.pedido.detalles.all %}
-                    <tr>
-                        <td>{{ d.producto.nombre }}</td>
-                        <td>{{ d.cantidad }}</td>
-                        <td>${{ d.precio_unitario_guardado }}</td>
-                        <td>${{ d.subtotal }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="total-box">
-            <strong>Total del documento: ${{ factura.monto_total|floatformat:0 }}</strong>
-        </div>
-
-        <div class="info-pago">
-            <h4>Información para confirmar pago</h4>
-            <small>
-                Para continuar con el proceso, debe enviar el comprobante al correo<br>
-                <strong>pagos@maiprot.cl</strong><br><br>
-                La información completa de pago será entregada de forma segura por correo.
-            </small>
-        </div>
-
-        <p style="text-align:center; margin-top:20px; font-size:9px;">
-            Documento generado por MAIPROT (versión interna).
-        </p>
-
+        <div style="clear: both;"></div>
+        <hr>
     </div>
+
+    <!-- Datos del Cliente -->
+    <div class="seccion">
+        <h3>Datos del Cliente</h3>
+
+        <p><strong>Usuario:</strong> {{ factura.pedido.usuario.username }}</p>
+
+        {% if factura.pedido.usuario.perfilusuario.direccion %}
+            <p><strong>Dirección:</strong> {{ factura.pedido.usuario.perfilusuario.direccion }}</p>
+        {% endif %}
+
+        {% if factura.pedido.usuario.perfilusuario.telefono %}
+            <p><strong>Teléfono:</strong> {{ factura.pedido.usuario.perfilusuario.telefono }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Detalles del Pedido -->
+    <div class="seccion">
+        <h3>Detalles del Pedido</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cant.</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for d in factura.pedido.detalles.all %}
+                <tr>
+                    <td>{{ d.producto.nombre }}</td>
+                    <td>{{ d.cantidad }}</td>
+                    <td>${{ d.precio_unitario_guardado }}</td>
+                    <td>${{ d.subtotal }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No hay productos registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Total del documento -->
+    <div class="total-box">
+        Total del documento: ${{ factura.monto_total|floatformat:0 }}
+    </div>
+
+    <!-- Información adicional segura -->
+    <div class="info-extra">
+        Para continuar con el proceso, envíe el comprobante al correo:<br>
+        <strong>pagos@maiprot.cl</strong><br><br>
+        La información completa se enviará por un canal seguro.
+    </div>
+
+    <div class="footer">
+        Documento generado automáticamente por MAIPROT S.A.
+    </div>
+
+</div>
+
 </body>
 </html>
