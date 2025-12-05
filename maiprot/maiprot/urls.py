@@ -72,7 +72,7 @@ urlpatterns = [
          ),
          name="password_reset_complete"),
     
-    path("create-admin/", create_admin),
+    
 
 ]
 
