@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 SPECTACULAR_SETTINGS = {
@@ -106,6 +108,12 @@ WSGI_APPLICATION = 'maiprot.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 import os
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+
+
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -165,8 +173,16 @@ LOGOUT_REDIRECT_URL = '/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL")
 
+cloudinary.config(
+    cloud_name=CLOUDINARY_URL.split('@')[-1] if CLOUDINARY_URL else "",
+    api_key=CLOUDINARY_URL.split('//')[1].split(':')[0] if CLOUDINARY_URL else "",
+    api_secret=CLOUDINARY_URL.split(':')[2].split('@')[0] if CLOUDINARY_URL else "",
+)
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
