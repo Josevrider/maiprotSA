@@ -36,9 +36,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # RUTA TEMPORAL PARA CREAR ADMIN
-    path("crear-admin/", crear_admin),   # 👈🔥 ESTA ES LA NUEVA RUTA
-
+    
     # Rutas de la web principal
     path('', include('appweb.urls')),
 
