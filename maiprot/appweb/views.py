@@ -388,3 +388,13 @@ def eliminar_item(request, item_id):
     messages.success(request, "Producto eliminado del carrito.")
     return redirect("ver_carrito")
 
+def create_admin(request):
+    # Crea solo si no existe
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser(
+            username="miguelSa",
+            password="maiprot12",
+        )
+        return HttpResponse("Superusuario creado correctamente.")
+    else:
+        return HttpResponse("El superusuario ya existe.")

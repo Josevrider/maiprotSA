@@ -11,6 +11,7 @@ from django.contrib.auth import views as auth_views
 # === 🔥 IMPORTACIÓN PARA CREAR SUPERUSUARIO TEMPORAL ===
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from appweb.views import create_admin
 
 def crear_admin(request):
     """
@@ -70,6 +71,9 @@ urlpatterns = [
              template_name="password/password_reset_complete.html"
          ),
          name="password_reset_complete"),
+    
+    path("create-admin/", create_admin),
+
 ]
 
 # Archivos media
