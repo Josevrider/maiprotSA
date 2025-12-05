@@ -11,23 +11,7 @@ from django.contrib.auth import views as auth_views
 # === 🔥 IMPORTACIÓN PARA CREAR SUPERUSUARIO TEMPORAL ===
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from appweb.views import create_admin
 
-def crear_admin(request):
-    """
-    Crea un superusuario temporalmente desde la URL:
-    https://tuapp.onrender.com/crear-admin/
-    Luego borra esta función y su ruta.
-    """
-    if User.objects.filter(username="admin").exists():
-        return HttpResponse("El admin ya existe")
-
-    User.objects.create_superuser(
-        username="admin",
-        email="admin@example.com",
-        password="admin123"
-    )
-    return HttpResponse("Superusuario creado correctamente")
 # ========================================================
 
 
