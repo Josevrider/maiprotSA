@@ -5,36 +5,55 @@
 
 {% block content %}
 
-<div class="pedido-wrapper">
+<div class="pedido-realizado-card">
 
-    <h2 class="pedido-titulo"><i class="fa-solid fa-check-circle"></i> Pedido Realizado</h2>
+    <div class="pedido-icono">✔</div>
 
-    <div class="pedido-resumen">
+    <h2 class="pedido-titulo-realizado">¡Pedido Realizado con Éxito!</h2>
+    <p class="pedido-subtitulo">
+        Gracias por tu compra. Tu pedido ha sido registrado correctamente.
+    </p>
 
-        <p><strong>Número de pedido:</strong> {{ pedido.id }}</p>
-        <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
-        <p><strong>Monto total:</strong> ${{ pedido.monto_total|floatformat:0 }}</p>
-        <p><strong>Estado:</strong> {{ pedido.estado }}</p>
+    <div class="pedido-info-box">
 
-        <hr>
+        <div class="pedido-info-item">
+            <span>📄 Número de pedido:</span> <strong>{{ pedido.id }}</strong>
+        </div>
 
-        <h3>Productos incluidos</h3>
+        <div class="pedido-info-item">
+            <span>📅 Fecha:</span> {{ pedido.fecha_pedido }}
+        </div>
 
-        <ul class="pedido-lista">
-            {% for d in detalles %}
-            <li class="pedido-item">
-                <strong>{{ d.cantidad }}x</strong> {{ d.producto.nombre }}  
-                — ${{ d.subtotal|floatformat:0 }}
-            </li>
-            {% endfor %}
-        </ul>
+        <div class="pedido-info-item">
+            <span>💵 Monto total:</span> <strong>${{ pedido.monto_total|floatformat:0 }}</strong>
+        </div>
 
-        <div class="pedido-botones">
-            <a href="{% url 'catalogo' %}" class="btn-volver">Volver al Catálogo</a>
-            <a href="{% url 'inicio' %}" class="btn-inicio">Ir al Inicio</a>
+        <div class="pedido-info-item">
+            <span>📌 Estado:</span> {{ pedido.estado }}
         </div>
 
     </div>
+
+    <h3 class="pedido-productos-titulo">Productos incluidos</h3>
+
+    <div class="pedido-productos-lista">
+        {% for d in detalles %}
+        <div class="pedido-producto-item">
+            <div class="pedido-prod-nombre">
+                {{ d.cantidad }}x — {{ d.producto.nombre }}
+            </div>
+            <div class="pedido-prod-precio">
+                ${{ d.subtotal|floatformat:0 }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pedido-botones-final">
+        <a href="{% url 'catalogo' %}" class="btn-volver-pedido">← Volver al Catálogo</a>
+        <a href="{% url 'inicio' %}" class="btn-inicio-pedido">Ir al Inicio</a>
+    </div>
+
 </div>
 
 {% endblock %}

@@ -934,3 +934,118 @@ footer {
     padding: 20px;
     box-sizing: border-box;
 }
+
+/* ============================================
+   PÁGINA: PEDIDO REALIZADO
+=============================================== */
+
+.pedido-realizado-card {
+    width: 90%;
+    max-width: 800px;
+    background: #ffffff;
+    margin: 40px auto;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+.pedido-icono {
+    font-size: 60px;
+    font-weight: bold;
+    color: #27ae60;
+    margin-bottom: 10px;
+}
+
+.pedido-titulo-realizado {
+    font-size: 2rem;
+    color: #0a3d62;
+    margin-bottom: 5px;
+}
+
+.pedido-subtitulo {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 25px;
+}
+
+/* Caja con info del pedido */
+.pedido-info-box {
+    background: #f7f9fc;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #0a3d62;
+    text-align: left;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.pedido-info-item {
+    font-size: 1rem;
+    padding: 6px 0;
+    color: #2c3e50;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Productos incluidos */
+.pedido-productos-titulo {
+    font-size: 1.4rem;
+    color: #0a3d62;
+    text-align: left;
+    margin-bottom: 12px;
+}
+
+.pedido-productos-lista {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.pedido-producto-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    font-size: 1rem;
+}
+
+.pedido-producto-item:last-child {
+    border-bottom: none;
+}
+
+.pedido-prod-precio {
+    font-weight: bold;
+    color: #008c44;
+}
+
+/* Botones finales */
+.pedido-botones-final {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-volver-pedido {
+    background: #dfe6e9;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: #2c3e50;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+.btn-volver-pedido:hover { background: #b2bec3; }
+
+.btn-inicio-pedido {
+    background: #0a3d62;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+.btn-inicio-pedido:hover {
+    background: #06324c;
+}
