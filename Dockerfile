@@ -26,10 +26,12 @@ COPY . .
 
 WORKDIR /app/maiprot
 
-
-
+# Ejecutar collectstatic SIN MIGRAR todavía
 RUN python manage.py collectstatic --noinput
 
-EXPOSE 8000
-
-CMD ["gunicorn", "maiprot.wsgi:application", "--bind", "0.0.0.0:8000"]
+# -------------------------------
+# ⭐ Nuevo: script de inicio ⭐
+# Ejecuta migraciones cada vez que Render inicia el contenedor
+# -------------------------------
+CMD python manage.py migrate --noinput && \
+    gunicorn maiprot.wsgi:application --bind 0.0.0.0:8000
