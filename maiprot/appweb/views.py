@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 
 # ============================
-# FORMATEAR MONTOS A CLP
+# FORMATEAR
 # ============================
 def formatear_clp(valor):
     try:
@@ -20,6 +20,15 @@ def formatear_clp(valor):
     except:
         return valor
     
+def formatear_rut(rut):
+    """Convierte '212869503' en '21.286.950-3' visualmente."""
+    rut = rut.replace(".", "").replace("-", "")
+    cuerpo = rut[:-1]
+    dv = rut[-1]
+
+    cuerpo_formateado = f"{int(cuerpo):,}".replace(",", ".")
+    return f"{cuerpo_formateado}-{dv}"
+
 # -----------------------------------------------------
 # VISTAS BASE DEL PROYECTO MAIPROT
 # -----------------------------------------------------
@@ -136,41 +145,64 @@ def logout_usuario(request):
 
 @login_required
 def ver_perfil(request):
-    """Muestra los datos del usuario logueado."""
-    return render(request, 'perfil.html', {'usuario': request.user})
+    rut_formateado = formatear_rut(request.user.username)
+
+    return render(request, 'perfil.html', {
+        'usuario': request.user,
+        'rut_formateado': rut_formateado
+    })
 
 @login_required
 def editar_perfil(request):
-    """
-    Permite al usuario modificar sus datos de perfil (modelo User) 
-    y sus datos adicionales (modelo PerfilUsuario) simultáneamente.
-    """
-    
-  
+
     perfil_usuario = request.user.perfilusuario
-        
+
     if request.method == 'POST':
+
+        # ====== 1. Capturar el RUT ingresado ======
+        nuevo_rut = request.POST.get("username", "").replace(".", "").replace("-", "")
+
+        # Validar formato mínimo
+        if not nuevo_rut.isalnum() or len(nuevo_rut) < 7:
+            messages.error(request, "❌ El RUT ingresado no tiene un formato válido.")
+            return redirect("editar_perfil")
+
+        # Validar que el RUT no esté ya tomado por otro usuario
+        from django.contrib.auth.models import User
+        if User.objects.exclude(id=request.user.id).filter(username=nuevo_rut).exists():
+            messages.error(request, "⚠️ Este RUT ya está registrado por otro usuario.")
+            return redirect("editar_perfil")
+
+        # Guardar el nuevo RUT en username
+        request.user.username = nuevo_rut
+
+        # ====== 2. Guardar los datos del usuario ======
         user_form = PerfilForm(request.POST, instance=request.user)
-        perfil_form = PerfilUsuarioForm(request.POST, request.FILES, instance=perfil_usuario) 
-        
+        perfil_form = PerfilUsuarioForm(request.POST, request.FILES, instance=perfil_usuario)
+
         if user_form.is_valid() and perfil_form.is_valid():
+
             user_form.save()
             perfil_form.save()
-            
+
             messages.success(request, "✔️ Tu perfil fue actualizado correctamente.")
             return redirect('ver_perfil')
+
         else:
-            messages.error(request, 'Hubo errores en la información. Por favor, revisa ambos formularios.')
+            messages.error(request, "❌ Hubo un error al actualizar tu perfil. Revisa los datos ingresados.")
+
     else:
         user_form = PerfilForm(instance=request.user)
         perfil_form = PerfilUsuarioForm(instance=perfil_usuario)
-        
+
     contexto = {
-        'user_form': user_form,
-        'perfil_form': perfil_form
+        "user_form": user_form,
+        "perfil_form": perfil_form,
+        "rut_actual": request.user.username
     }
-    
-    return render(request, 'editar_perfil.html', contexto)
+
+    return render(request, "editar_perfil.html", contexto)
+
 
 
 # -----------------------------------------------------

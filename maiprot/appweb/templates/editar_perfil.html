@@ -13,26 +13,44 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
+            <!-- ======================= -->
+            <!-- DATOS BÁSICOS           -->
+            <!-- ======================= -->
             <h3>Datos Básicos</h3>
             <div class="form-grid">
+
+                <!-- RUT -->
+                <div class="form-group">
+                    <label>RUT (sin puntos ni guión)</label>
+                    <input type="text" name="username" value="{{ user.username }}" placeholder="11222333K" required>
+                </div>
+
+                <!-- Nombre -->
                 <div class="form-group">
                     <label>Nombre</label>
                     <input type="text" name="first_name" value="{{ user.first_name }}">
                 </div>
 
+                <!-- Apellido -->
                 <div class="form-group">
                     <label>Apellido</label>
                     <input type="text" name="last_name" value="{{ user.last_name }}">
                 </div>
 
+                <!-- Correo -->
                 <div class="form-group">
                     <label>Correo</label>
                     <input type="email" name="email" value="{{ user.email }}">
                 </div>
+
             </div>
 
+            <!-- ======================= -->
+            <!-- DATOS ADICIONALES       -->
+            <!-- ======================= -->
             <h3>Datos Adicionales</h3>
             <div class="form-grid">
+
                 <div class="form-group">
                     <label>Dirección</label>
                     <input type="text" name="direccion" value="{{ user.perfilusuario.direccion }}">
@@ -47,6 +65,7 @@
                     <label>Foto de perfil</label>
                     <input type="file" name="imagen_perfil">
                 </div>
+
             </div>
 
             <button class="btn-guardar" type="submit">Guardar Cambios</button>

@@ -17,7 +17,6 @@
                     Usuario
                 {% endif %}
             </h2>
-            <p><strong>RUT:</strong> {{ user.username }}</p>
         </div>
 
         <div class="perfil-body">
@@ -27,10 +26,24 @@
             </div>
 
             <div class="perfil-info">
-                <p><strong>Nombre:</strong> {{ user.first_name|default:"No especificado" }} {{ user.last_name|default:"" }}</p>
+
+                <p><strong>RUT:</strong> {{ rut_formateado }}</p>
+
+                <p><strong>Nombre:</strong> 
+                    {{ user.first_name|default:"No especificado" }} 
+                    {{ user.last_name|default:"" }}
+                </p>
+
                 <p><strong>Email:</strong> {{ user.email|default:"No especificado" }}</p>
-                <p><strong>Dirección:</strong> {{ user.perfilusuario.direccion|default:"No especificada" }}</p>
-                <p><strong>Teléfono:</strong> {{ user.perfilusuario.telefono|default:"No especificado" }}</p>
+
+                <p><strong>Dirección:</strong> 
+                    {{ user.perfilusuario.direccion|default:"No especificificada" }}
+                </p>
+
+                <p><strong>Teléfono:</strong> 
+                    {{ user.perfilusuario.telefono|default:"No especificado" }}
+                </p>
+
             </div>
 
         </div>
