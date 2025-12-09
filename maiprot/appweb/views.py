@@ -106,7 +106,7 @@ def login_usuario(request):
                 messages.info(
                     request,
                     "Recuerda: para iniciar sesión con tu RUT escríbelo sin puntos ni guion. "
-                    "Ejemplo: 212869503"
+                    "Ejemplo: 123456789"
                 )
                 return redirect('inicio')
 
