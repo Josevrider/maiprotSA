@@ -76,33 +76,52 @@ def registro(request):
 
 def login_usuario(request):
     if request.method == 'POST':
-        user_input = request.POST['username']   # Puede ser RUT o correo
-        password = request.POST['password']
+        login_input = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
 
-        # 1) Intentar login asumiendo que es username (RUT)
-        user = authenticate(request, username=user_input, password=password)
+        user = None
 
-        # 2) Si no funcionó, intentamos tratarlo como correo
-        if user is None:
+        # 1) Intento por correo (si viene con @)
+        if '@' in login_input:
             try:
-                user_obj = User.objects.get(email=user_input)
-                user = authenticate(
-                    request,
-                    username=user_obj.username,
-                    password=password
-                )
+                user_obj = User.objects.get(email__iexact=login_input)
+                username_for_auth = user_obj.username
             except User.DoesNotExist:
-                user = None
+                username_for_auth = login_input
+        else:
+            username_for_auth = login_input
 
+        # 2) Intento normal (username / rut sin formato)
+        user = authenticate(request, username=username_for_auth, password=password)
+
+        # 3) Si falló y el input parece RUT con puntos/guion → lo normalizamos
+        if user is None and ('.' in login_input or '-' in login_input):
+            rut_normalizado = login_input.replace('.', '').replace('-', '').strip()
+            user = authenticate(request, username=rut_normalizado, password=password)
+
+            if user is not None:
+                login(request, user)
+                nombre = user.first_name if user.first_name else user.username
+                messages.success(request, f"¡Bienvenido, {nombre}! 👋")
+                messages.info(
+                    request,
+                    "Recuerda: para iniciar sesión con tu RUT escríbelo sin puntos ni guion. "
+                    "Ejemplo: 212869503"
+                )
+                return redirect('inicio')
+
+        # 4) Si funcionó en el intento normal
         if user is not None:
             login(request, user)
             nombre = user.first_name if user.first_name else user.username
             messages.success(request, f"¡Nos alegra verte de nuevo, {nombre}! 👋")
             return redirect('inicio')
-        else:
-            messages.error(request, '❌ RUT/Correo o contraseña incorrectos.')
 
+        # 5) Si nada funcionó
+        messages.error(request, '❌ Usuario / RUT / correo o contraseña incorrectos.')
+            
     return render(request, 'login.html')
+
 
 @login_required
 def logout_usuario(request):
