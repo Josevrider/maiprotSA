@@ -7,6 +7,8 @@ from django.contrib import messages
 from .models import PerfilUsuario
 from django.db.models import Sum, F
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+
 
 
 # ============================
