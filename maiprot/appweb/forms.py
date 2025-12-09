@@ -9,32 +9,41 @@ import re
 # 1. FORMULARIO DE REGISTRO CON RUT Y CONFIRMAR CONTRASEÑA
 # -----------------------------------------------------
 class RegistroForm(forms.ModelForm):
-    first_name = forms.CharField(label="Nombre", max_length=50)
-    last_name = forms.CharField(label="Apellido", max_length=50)
-    email = forms.EmailField(label="Correo electrónico")
-
-    rut = forms.CharField(label="RUT", max_length=12)
-
-    password = forms.CharField(
-        label="Contraseña",
-        widget=forms.PasswordInput
+    rut = forms.CharField(
+        max_length=12,
+        required=True,
+        label="RUT",
+        help_text="Ej: 11.111.111-1"
     )
-
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        required=True,
+        label="Contraseña"
+    )
     password2 = forms.CharField(
-        label="Confirmar contraseña",
-        widget=forms.PasswordInput
+        widget=forms.PasswordInput,
+        required=True,
+        label="Confirmar contraseña"
     )
 
     class Meta:
         model = User
-        fields = [
-            "first_name",
-            "last_name",
-            "email",
-            "rut",
-            "username",  # lo ocultamos en el HTML, pero debe existir
-            "password"
-        ]
+        fields = ["first_name", "last_name", "email"]
+        labels = {
+            "first_name": "Nombre",
+            "last_name": "Apellido",
+            "email": "Correo electrónico",
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        password = cleaned.get("password")
+        password2 = cleaned.get("password2")
+
+        if password and password2 and password != password2:
+            raise forms.ValidationError("Las contraseñas no coinciden.")
+
+        return cleaned
 
     # ------------------------------
     # VALIDACIÓN DE RUT CHILENO

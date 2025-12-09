@@ -44,14 +44,14 @@ def registro(request):
             # Crear el usuario sin guardar aún
             user = form.save(commit=False)
 
-            # El username será el RUT validado
-            user.username = form.cleaned_data["rut"]
+            # Username = RUT (limpio)
+            rut = form.cleaned_data["rut"].strip()
+            user.username = rut
 
             # Guardar la contraseña correctamente
             user.set_password(form.cleaned_data["password"])
             user.save()
 
-            # Mensaje bonito
             messages.success(
                 request,
                 "🎉 ¡Tu cuenta fue creada exitosamente! Ahora puedes iniciar sesión."
@@ -71,24 +71,36 @@ def registro(request):
     return render(request, 'registro.html', {'form': form})
 
 
+
 def login_usuario(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        user_input = request.POST['username']   # Puede ser RUT o correo
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        
+
+        # 1) Intentar login asumiendo que es username (RUT)
+        user = authenticate(request, username=user_input, password=password)
+
+        # 2) Si no funcionó, intentamos tratarlo como correo
+        if user is None:
+            try:
+                user_obj = User.objects.get(email=user_input)
+                user = authenticate(
+                    request,
+                    username=user_obj.username,
+                    password=password
+                )
+            except User.DoesNotExist:
+                user = None
+
         if user is not None:
             login(request, user)
-
             nombre = user.first_name if user.first_name else user.username
             messages.success(request, f"¡Nos alegra verte de nuevo, {nombre}! 👋")
-
             return redirect('inicio')
         else:
-            messages.error(request, '❌ Usuario o contraseña incorrectos.')
-            
-    return render(request, 'login.html')
+            messages.error(request, '❌ RUT/Correo o contraseña incorrectos.')
 
+    return render(request, 'login.html')
 
 @login_required
 def logout_usuario(request):
