@@ -2,11 +2,48 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from .models import Pedido, PerfilUsuario
-import re
 
 
 # -----------------------------------------------------
-# 1. FORMULARIO DE REGISTRO CON RUT Y CONFIRMAR CONTRASEÑA
+# FUNCIÓN SEGURA PARA VALIDAR RUT
+# -----------------------------------------------------
+def validar_rut(rut):
+    rut = rut.replace(".", "").replace("-", "").upper()
+
+    if len(rut) < 2:
+        return False
+
+    cuerpo = rut[:-1]
+    dv = rut[-1]
+
+    if not cuerpo.isdigit():
+        return False
+
+    # Cálculo del DV usando método módulo 11 real
+    suma = 0
+    multiplicador = 2
+
+    for c in reversed(cuerpo):
+        suma += int(c) * multiplicador
+        multiplicador += 1
+        if multiplicador > 7:
+            multiplicador = 2
+
+    resto = suma % 11
+    dv_calculado = 11 - resto
+
+    if dv_calculado == 11:
+        dv_calculado = "0"
+    elif dv_calculado == 10:
+        dv_calculado = "K"
+    else:
+        dv_calculado = str(dv_calculado)
+
+    return dv == dv_calculado
+
+
+# -----------------------------------------------------
+# 1. FORMULARIO DE REGISTRO
 # -----------------------------------------------------
 class RegistroForm(forms.ModelForm):
     rut = forms.CharField(
@@ -35,63 +72,31 @@ class RegistroForm(forms.ModelForm):
             "email": "Correo electrónico",
         }
 
+    # --------------------
+    # VALIDAR RUT
+    # --------------------
+    def clean_rut(self):
+        rut = self.cleaned_data["rut"]
+
+        if not validar_rut(rut):
+            raise ValidationError("El RUT ingresado no es válido (dígito incorrecto).")
+
+        # Normalizar formato
+        return rut.replace(".", "").replace("-", "").upper()
+
+    # --------------------
+    # VALIDAR CONTRASEÑA
+    # --------------------
     def clean(self):
         cleaned = super().clean()
+
         password = cleaned.get("password")
         password2 = cleaned.get("password2")
 
         if password and password2 and password != password2:
-            raise forms.ValidationError("Las contraseñas no coinciden.")
-
-        return cleaned
-
-    # ------------------------------
-    # VALIDACIÓN DE RUT CHILENO
-    # ------------------------------
-    def clean_rut(self):
-        rut = self.cleaned_data["rut"].replace(".", "").replace("-", "").lower()
-
-        if not re.match(r"^\d{7,8}[0-9kK]$", rut):
-            raise ValidationError("El RUT ingresado no es válido (formato incorrecto).")
-
-        cuerpo = rut[:-1]
-        dv_ingresado = rut[-1]
-
-        # Cálculo del dígito verificador
-        suma = 0
-        multiplo = 2
-
-        for c in reversed(cuerpo):
-            suma += int(c) * multiplo
-            multiplo = 9 if multiplo == 7 else multiplo + 1
-
-        dv_calculado = 11 - (suma % 11)
-
-        if dv_calculado == 11:
-            dv_calculado = "0"
-        elif dv_calculado == 10:
-            dv_calculado = "k"
-        else:
-            dv_calculado = str(dv_calculado)
-
-        if dv_calculado != dv_ingresado:
-            raise ValidationError("El RUT ingresado no es válido (dígito incorrecto).")
-
-        return rut
-
-    # ------------------------------
-    # VALIDACIÓN DE CONTRASEÑAS
-    # ------------------------------
-    def clean(self):
-        cleaned_data = super().clean()
-
-        p1 = cleaned_data.get("password")
-        p2 = cleaned_data.get("password2")
-
-        if p1 and p2 and p1 != p2:
             raise ValidationError("Las contraseñas no coinciden.")
 
-        return cleaned_data
+        return cleaned
 
 
 # -----------------------------------------------------
@@ -113,7 +118,7 @@ class PerfilUsuarioForm(forms.ModelForm):
 
 
 # -----------------------------------------------------
-# 4. PEDIDOS
+# 4. FORMULARIO PEDIDOS
 # -----------------------------------------------------
 class PedidoForm(forms.ModelForm):
     class Meta:
