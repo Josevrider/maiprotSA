@@ -114,20 +114,28 @@
        SCRIPT PARA ELIMINAR TOASTS
   ==================================== -->
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-      const toasts = document.querySelectorAll(".toast");
+document.addEventListener("DOMContentLoaded", function () {
+    const toasts = document.querySelectorAll(".toast");
 
-      toasts.forEach(toast => {
-          // Mostrar animación
-          toast.classList.add("toast-show");
+    toasts.forEach(toast => {
+        // Mostrar animado
+        setTimeout(() => {
+            toast.classList.add("toast-show");
+        }, 100);
 
-          // Eliminar completamente el elemento del DOM después de X tiempo
-          setTimeout(() => {
-              toast.remove();
-          }, 4000); // 4 segundos
-      });
-  });
-  </script>
+        // Ocultar después de 3.5s
+        setTimeout(() => {
+            toast.classList.add("toast-hide");
+        }, 3500);
+
+        // Eliminar del DOM después de la animación
+        setTimeout(() => {
+            toast.remove();
+        }, 4500);
+    });
+});
+</script>
+
 
 </body>
 </html>
