@@ -825,10 +825,12 @@ footer {
 /* ======= TOAST CONTAINER ======= */
 .toast-container {
     position: fixed;
-    top: 20px;
+    top: 90px;              /* 🔹 Más abajo que el header */
     right: 20px;
     z-index: 9999;
+    pointer-events: none;   /* 🔹 No bloquea clics en lo que hay debajo */
 }
+
 
 /* ======= TOAST BASE ======= */
 .toast {
@@ -847,38 +849,21 @@ footer {
 }
 
 /* ======= COLORES SEGÚN EL MENSAJE ======= */
-.toast-success {
-    background-color: #2ecc71;
-}
-.toast-info {
-    background-color: #3498db;
-}
-.toast-warning {
-    background-color: #f1c40f;
-    color: #000;
-}
-.toast-error {
-    background-color: #e74c3c;
-}
+.toast-success { background-color: #2ecc71; }
+.toast-info    { background-color: #3498db; }
+.toast-warning { background-color: #f1c40f; color: #000; }
+.toast-error   { background-color: #e74c3c; }
 
 /* ======= ANIMACIONES ======= */
 @keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes fadeOut {
-    to {
-        opacity: 0;
-        transform: translateX(30px);
-    }
+    to { opacity: 0; transform: translateX(30px); }
 }
+
 
 /* =====================================================
       FOOTER RESPONSIVE Y QUE SE PEGUE ABAJO
