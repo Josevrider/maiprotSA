@@ -40,7 +40,7 @@
 
                 {% if user.is_authenticated %}
 
-                    <!-- Carrito con badge seguro -->
+                    <!-- Carrito con badge -->
                     <a href="{% url 'ver_carrito' %}" class="carrito-icono" title="Mi Carrito">
                         <i class="fa-solid fa-cart-shopping"></i>
 
@@ -83,17 +83,6 @@
       </div>
   </header>
 
-{% if messages %}
-<div class="toast-container">
-    {% for message in messages %}
-        <div class="toast toast-{{ message.tags }}">
-            <span>{{ message }}</span>
-        </div>
-    {% endfor %}
-</div>
-{% endif %}
-
-
 
   <!-- CONTENIDO PRINCIPAL -->
   <main>
@@ -101,13 +90,26 @@
       {% endblock %}
   </main>
 
+
   <!-- FOOTER -->
   <footer class="footer">
     <p>© 2025 Maiprot. Todos los derechos reservados.</p>
   </footer>
 
+
   {% block extra_js %}
   {% endblock %}
+
+  
+  {% if messages %}
+  <div class="toast-container">
+      {% for message in messages %}
+          <div class="toast toast-{{ message.tags }}">
+              <span>{{ message }}</span>
+          </div>
+      {% endfor %}
+  </div>
+  {% endif %}
 
 </body>
 </html>
