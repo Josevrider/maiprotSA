@@ -107,6 +107,26 @@
   </footer>
 
   {% block extra_js %}
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toastContainer = document.querySelector(".toast-container");
+        if (!toastContainer) return;
+
+        // Si NO hay toasts dentro, ocultamos el contenedor completamente
+        if (toastContainer.children.length === 0) {
+            toastContainer.style.display = "none";
+            return;
+        }
+
+        // Cuando termine la animación de salida, ocultamos el contenedor
+        setTimeout(() => {
+            toastContainer.style.pointerEvents = "none";  // no bloquea clics
+            toastContainer.style.height = "0";             // no ocupa espacio
+            toastContainer.style.overflow = "hidden";
+        }, 4500);  // tiempo de tu fadeOut (4s) + pequeño margen
+    });
+    </script>
+
   {% endblock %}
 
 </body>
