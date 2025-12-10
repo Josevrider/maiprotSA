@@ -16,7 +16,7 @@
 <body>
 
   <!-- ================================
-       HEADER PROFESIONAL
+       HEADER
   ==================================== -->
   <header class="header">
       <div class="header-container">
@@ -83,24 +83,9 @@
       </div>
   </header>
 
-
-  <!-- CONTENIDO PRINCIPAL -->
-  <main>
-      {% block content %}
-      {% endblock %}
-  </main>
-
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <p>© 2025 Maiprot. Todos los derechos reservados.</p>
-  </footer>
-
-
-  {% block extra_js %}
-  {% endblock %}
-
-  
+  <!-- ================================
+       TOASTS (MENSAJES)
+  ==================================== -->
   {% if messages %}
   <div class="toast-container">
       {% for message in messages %}
@@ -110,6 +95,39 @@
       {% endfor %}
   </div>
   {% endif %}
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main>
+      {% block content %}
+      {% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>© 2025 Maiprot. Todos los derechos reservados.</p>
+  </footer>
+
+  {% block extra_js %}
+  {% endblock %}
+
+  <!-- ================================
+       SCRIPT PARA ELIMINAR TOASTS
+  ==================================== -->
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+      const toasts = document.querySelectorAll(".toast");
+
+      toasts.forEach(toast => {
+          // Mostrar animación
+          toast.classList.add("toast-show");
+
+          // Eliminar completamente el elemento del DOM después de X tiempo
+          setTimeout(() => {
+              toast.remove();
+          }, 4000); // 4 segundos
+      });
+  });
+  </script>
 
 </body>
 </html>
