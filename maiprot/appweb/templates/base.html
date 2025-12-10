@@ -16,7 +16,7 @@
 <body>
 
   <!-- ================================
-       HEADER
+       HEADER PROFESIONAL
   ==================================== -->
   <header class="header">
       <div class="header-container">
@@ -40,7 +40,7 @@
 
                 {% if user.is_authenticated %}
 
-                    <!-- Carrito con badge -->
+                    <!-- Carrito con badge seguro -->
                     <a href="{% url 'ver_carrito' %}" class="carrito-icono" title="Mi Carrito">
                         <i class="fa-solid fa-cart-shopping"></i>
 
@@ -83,18 +83,17 @@
       </div>
   </header>
 
-  <!-- ================================
-       TOASTS (MENSAJES)
-  ==================================== -->
-  {% if messages %}
-  <div class="toast-container">
-      {% for message in messages %}
-          <div class="toast toast-{{ message.tags }}">
-              <span>{{ message }}</span>
-          </div>
-      {% endfor %}
-  </div>
-  {% endif %}
+{% if messages %}
+<div class="toast-container">
+    {% for message in messages %}
+        <div class="toast toast-{{ message.tags }}">
+            <span>{{ message }}</span>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
 
   <!-- CONTENIDO PRINCIPAL -->
   <main>
@@ -109,33 +108,6 @@
 
   {% block extra_js %}
   {% endblock %}
-
-  <!-- ================================
-       SCRIPT PARA ELIMINAR TOASTS
-  ==================================== -->
-  <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const toasts = document.querySelectorAll(".toast");
-
-    toasts.forEach(toast => {
-        // Mostrar animado
-        setTimeout(() => {
-            toast.classList.add("toast-show");
-        }, 100);
-
-        // Ocultar después de 3.5s
-        setTimeout(() => {
-            toast.classList.add("toast-hide");
-        }, 3500);
-
-        // Eliminar del DOM después de la animación
-        setTimeout(() => {
-            toast.remove();
-        }, 4500);
-    });
-});
-</script>
-
 
 </body>
 </html>

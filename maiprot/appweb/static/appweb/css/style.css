@@ -822,46 +822,31 @@ footer {
 /* ocultar badge si 0 */
 .carrito-badge { display: inline-flex; align-items:center; justify-content:center; }
 
-/* ===========================
-   CONTENEDOR DE TOASTS
-=========================== */
+/* ======= TOAST CONTAINER ======= */
 .toast-container {
     position: fixed;
     top: 20px;
     right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
     z-index: 9999;
-    pointer-events: none; /* 🔥 No bloquea clicks */
 }
 
-/* ===========================
-   TOAST BASE
-=========================== */
+/* ======= TOAST BASE ======= */
 .toast {
     min-width: 260px;
+    margin-bottom: 12px;
     padding: 15px 18px;
     border-radius: 10px;
     font-size: 15px;
     font-weight: 500;
     color: #fff;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    opacity: 0;
-    transform: translateX(40px);
-    transition: all 0.4s ease;
-    pointer-events: auto; /* Permite hover sobre sí mismo */
+    animation: slideIn 0.4s ease, fadeOut 0.5s ease 4s forwards;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* Estado visible (lo activa JS) */
-.toast-show {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* ===========================
-   COLORES SEGÚN TIPO
-=========================== */
+/* ======= COLORES SEGÚN EL MENSAJE ======= */
 .toast-success {
     background-color: #2ecc71;
 }
@@ -876,12 +861,23 @@ footer {
     background-color: #e74c3c;
 }
 
-/* ===========================
-   DESVANECIMIENTO MANUAL
-=========================== */
-.toast-hide {
-    opacity: 0;
-    transform: translateX(40px);
+/* ======= ANIMACIONES ======= */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateX(30px);
+    }
 }
 
 /* =====================================================
