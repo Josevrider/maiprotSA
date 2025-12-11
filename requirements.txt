@@ -12,3 +12,4 @@ psycopg2-binary
 dj-database-url
 cloudinary
 django-cloudinary-storage
+django-sendgrid-v5
