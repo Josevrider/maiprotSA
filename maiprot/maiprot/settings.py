@@ -190,22 +190,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-# ============================================
-# SENDGRID - API BACKEND (FUNCIONA EN RENDER)
-# ============================================
-
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
-# Tu correo remitente
 DEFAULT_FROM_EMAIL = "jhostarider98@gmail.com"
 
-# Para que mande correos realmente
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
-# Opcional: mejor manejo de errores
-SENDGRID_TRACK_EMAIL_OPENS = True
+# 👇👇👇 AGREGAR ESTO
+SENDGRID_TRACK_EMAILS = False
+SENDGRID_TRACKING_SETTINGS = {
+    "click_tracking": {"enable": False, "enable_text": False},
+    "open_tracking": {"enable": False},
+}
+
+# 👇 OBLIGATORIO PARA QUE EL TEMPLATE SE MUESTRE EN HTML
+EMAIL_USE_HTML = True
+
 
 
 
