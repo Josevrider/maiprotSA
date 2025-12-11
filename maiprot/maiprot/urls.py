@@ -34,7 +34,7 @@ urlpatterns = [
             form_class=PasswordResetCustomForm,
             template_name="password/password_reset.html",
             email_template_name="password/password_reset_email.txt",
-            html_email_template_name = "password/password_reset_email.html"
+            html_email_template_name = "password/password_reset_email.html",
             subject_template_name="password/password_reset_subject.txt",
             html_email_template_name="password/password_reset_email_html.html",  # versión HTML real
         ),
