@@ -190,13 +190,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'jhostarider98@gmail.com'
-EMAIL_HOST_PASSWORD = 'nmte scni tque puaw'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# ============================
+# SENDGRID EMAIL SETTINGS
+# ============================
+
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+
+DEFAULT_FROM_EMAIL = "jhostarider98@gmail.com"
+
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 
 CSRF_TRUSTED_ORIGINS = [
