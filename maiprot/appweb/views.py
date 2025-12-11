@@ -52,30 +52,18 @@ def registro(request):
         form = RegistroForm(request.POST)
 
         if form.is_valid():
-            # Crear el usuario sin guardar aún
-            user = form.save(commit=False)
-
-            # Username = RUT (limpio)
-            rut = form.cleaned_data["rut"].strip()
-            user.username = rut
-
-            # Guardar la contraseña correctamente
-            user.set_password(form.cleaned_data["password"])
-            user.save()
+            user = form.save()  # El save() del form ya setea username y password
 
             messages.success(
                 request,
                 "🎉 ¡Tu cuenta fue creada exitosamente! Ahora puedes iniciar sesión."
             )
-
             return redirect('login')
-
         else:
-            # Mostrar errores uno por uno
+            # Ya muestras errores en el template, pero esto agrega toasts si quieres
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"⚠️ {error}")
-
     else:
         form = RegistroForm()
 

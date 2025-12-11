@@ -5,7 +5,7 @@ from .models import Pedido, PerfilUsuario
 
 
 # -----------------------------------------------------
-# FUNCIÓN SEGURA PARA VALIDAR RUT
+# FUNCIÓN SEGURA PARA VALIDAR RUT (MÓDULO 11)
 # -----------------------------------------------------
 def validar_rut(rut):
     rut = rut.replace(".", "").replace("-", "").upper()
@@ -19,7 +19,6 @@ def validar_rut(rut):
     if not cuerpo.isdigit():
         return False
 
-    # Cálculo del DV usando método módulo 11 real
     suma = 0
     multiplicador = 2
 
@@ -46,6 +45,7 @@ def validar_rut(rut):
 # 1. FORMULARIO DE REGISTRO
 # -----------------------------------------------------
 class RegistroForm(forms.ModelForm):
+
     rut = forms.CharField(
         max_length=12,
         required=True,
@@ -72,21 +72,25 @@ class RegistroForm(forms.ModelForm):
             "email": "Correo electrónico",
         }
 
-    # --------------------
-    # VALIDAR RUT
-    # --------------------
+    # -------------------------------------------------
+    # VALIDACIÓN COMPLETA DEL RUT
+    # -------------------------------------------------
     def clean_rut(self):
-        rut = self.cleaned_data["rut"]
+        rut = self.cleaned_data["rut"].replace(".", "").replace("-", "").upper()
 
+        # Validar estructura (módulo 11)
         if not validar_rut(rut):
-            raise ValidationError("El RUT ingresado no es válido (dígito incorrecto).")
+            raise ValidationError("El RUT ingresado no es válido.")
 
-        # Normalizar formato
-        return rut.replace(".", "").replace("-", "").upper()
+        # Verificar que NO exista ya en la base de datos
+        if User.objects.filter(username=rut).exists():
+            raise ValidationError("Este RUT ya está registrado.")
 
-    # --------------------
-    # VALIDAR CONTRASEÑA
-    # --------------------
+        return rut
+
+    # -------------------------------------------------
+    # VALIDACIÓN: contraseñas iguales
+    # -------------------------------------------------
     def clean(self):
         cleaned = super().clean()
 
@@ -97,6 +101,23 @@ class RegistroForm(forms.ModelForm):
             raise ValidationError("Las contraseñas no coinciden.")
 
         return cleaned
+
+    # -------------------------------------------------
+    # GUARDAR EL RUT COMO USERNAME
+    # -------------------------------------------------
+    def save(self, commit=True):
+        user = super().save(commit=False)
+
+        # Usar RUT normalizado como username
+        user.username = self.cleaned_data["rut"]
+
+        # Guardar contraseña encriptada
+        user.set_password(self.cleaned_data["password"])
+
+        if commit:
+            user.save()
+
+        return user
 
 
 # -----------------------------------------------------
