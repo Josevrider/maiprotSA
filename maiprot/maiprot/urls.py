@@ -10,33 +10,32 @@ from django.contrib.auth import views as auth_views
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-# Import del formulario personalizado de Reset
+# Import del formulario personalizado
 from appweb.forms import PasswordResetCustomForm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # Rutas de la web principal
+    # Rutas principales
     path('', include('appweb.urls')),
 
     # API
     path('api/v1/', include('appweb.api.urls')),
     path('api-auth/', include('rest_framework.urls')),
 
-    # ESQUEMA Y DOCUMENTACIÓN
+    # Swagger
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
-    # === Password Reset Personalizado ===
+    # === PASSWORD RESET PERSONALIZADO ===
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(
             form_class=PasswordResetCustomForm,
             template_name="password/password_reset.html",
-            email_template_name="password/password_reset_email.txt",
-            html_email_template_name = "password/password_reset_email.html",
+            email_template_name="password/password_reset_email.txt",  # obligatorio TXT
+            html_email_template_name="password/password_reset_email.html",  # tu HTML bonito
             subject_template_name="password/password_reset_subject.txt",
-            html_email_template_name="password/password_reset_email_html.html",  # versión HTML real
         ),
         name="password_reset",
     ),
