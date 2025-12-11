@@ -190,9 +190,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-# =============================
-# SENDGRID EMAIL SETTINGS
-# =============================
+# ============================================
+# CONFIGURACIÓN DE EMAIL - SENDGRID (SMTP)
+# ============================================
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
@@ -200,15 +200,15 @@ EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# SendGrid siempre usa esto como user
+# SendGrid siempre usa "apikey" como usuario
 EMAIL_HOST_USER = "apikey"
 
-# Tu API KEY viene desde el Environment de Render
+# La API Key viene desde las variables de entorno
 EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_API_KEY")
 
+# Este es el correo que aparecerá como remitente
 DEFAULT_FROM_EMAIL = "jhostarider98@gmail.com"
 
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 
 
