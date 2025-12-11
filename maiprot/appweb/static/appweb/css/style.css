@@ -1034,3 +1034,76 @@ footer {
 .btn-inicio-pedido:hover {
     background: #06324c;
 }
+
+/* =====================================================
+      PÁGINAS RECUPERACIÓN DE CONTRASEÑA
+      (Password Reset)
+===================================================== */
+
+.password-card {
+    width: 90%;
+    max-width: 450px;
+    background: #ffffff;
+    margin: 40px auto;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+.password-card h2 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    color: #0a3d62;
+}
+
+.password-card p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.password-card form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+.btn-password {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background-color: #0a3d62;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-password:hover {
+    background-color: #06324c;
+}
+
+/* Mensaje de éxito */
+.password-success {
+    background: #eafaf1;
+    border-left: 4px solid #27ae60;
+    padding: 12px;
+    border-radius: 8px;
+    color: #1d7a46;
+    margin-bottom: 20px;
+}
+
+/* Mensaje de error */
+.password-error {
+    background: #fdecea;
+    border-left: 4px solid #e74c3c;
+    padding: 12px;
+    border-radius: 8px;
+    color: #a93226;
+    margin-bottom: 20px;
+}

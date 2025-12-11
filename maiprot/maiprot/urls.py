@@ -8,19 +8,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
-# === 🔥 IMPORTACIÓN PARA CREAR SUPERUSUARIO TEMPORAL ===
-from django.contrib.auth.models import User
-from django.http import HttpResponse
-
-# ========================================================
-
-
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    
     # Rutas de la web principal
     path('', include('appweb.urls')),
 
@@ -32,30 +24,35 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
-    # Password Reset
+    # === Rutas estándar de autenticación (NECESARIAS PARA EL RESET) ===
+    path("accounts/", include("django.contrib.auth.urls")),
+
+    # === Password Reset Personalizado (usando tus templates) ===
     path("password_reset/",
          auth_views.PasswordResetView.as_view(
-             template_name="password/password_reset.html"
+             template_name="password/password_reset.html",
+             email_template_name="password/password_reset_email.html",
+             subject_template_name="password/password_reset_subject.txt"
          ),
          name="password_reset"),
+
     path("password_reset_done/",
          auth_views.PasswordResetDoneView.as_view(
              template_name="password/password_reset_done.html"
          ),
          name="password_reset_done"),
+
     path("reset/<uidb64>/<token>/",
          auth_views.PasswordResetConfirmView.as_view(
              template_name="password/password_reset_confirm.html"
          ),
          name="password_reset_confirm"),
+
     path("reset_complete/",
          auth_views.PasswordResetCompleteView.as_view(
              template_name="password/password_reset_complete.html"
          ),
          name="password_reset_complete"),
-    
-    
-
 ]
 
 # Archivos media
