@@ -24,8 +24,6 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
-    # === Rutas estándar de autenticación (NECESARIAS PARA EL RESET) ===
-    path("accounts/", include("django.contrib.auth.urls")),
 
     # === Password Reset Personalizado (usando tus templates) ===
     path("password_reset/",
