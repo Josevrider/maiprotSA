@@ -1,7 +1,13 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import PasswordResetForm
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+
 from .models import Pedido, PerfilUsuario
+from .email_utils import enviar_correo_html   # IMPORTANTE
 
 
 # -----------------------------------------------------
@@ -72,9 +78,6 @@ class RegistroForm(forms.ModelForm):
             "email": "Correo electrónico",
         }
 
-    # -------------------------------------------------
-    # VALIDACIÓN COMPLETA DEL RUT
-    # -------------------------------------------------
     def clean_rut(self):
         rut = self.cleaned_data["rut"].replace(".", "").replace("-", "").upper()
 
@@ -88,9 +91,6 @@ class RegistroForm(forms.ModelForm):
 
         return rut
 
-    # -------------------------------------------------
-    # VALIDACIÓN: contraseñas iguales
-    # -------------------------------------------------
     def clean(self):
         cleaned = super().clean()
 
@@ -102,16 +102,10 @@ class RegistroForm(forms.ModelForm):
 
         return cleaned
 
-    # -------------------------------------------------
-    # GUARDAR EL RUT COMO USERNAME
-    # -------------------------------------------------
     def save(self, commit=True):
         user = super().save(commit=False)
 
-        # Usar RUT normalizado como username
         user.username = self.cleaned_data["rut"]
-
-        # Guardar contraseña encriptada
         user.set_password(self.cleaned_data["password"])
 
         if commit:
@@ -145,3 +139,44 @@ class PedidoForm(forms.ModelForm):
     class Meta:
         model = Pedido
         fields = ["estado"]
+
+
+# -----------------------------------------------------
+# 5. FORMULARIO PERSONALIZADO PARA RECUPERAR CONTRASEÑA
+# -----------------------------------------------------
+class PasswordResetCustomForm(PasswordResetForm):
+
+    def save(self, domain_override=None,
+             subject_template_name="registration/password_reset_subject.txt",
+             email_template_name="registration/password_reset_email.html",
+             html_email_template_name=None,
+             use_https=True,
+             token_generator=default_token_generator,
+             from_email=None,
+             request=None,
+             extra_email_context=None):
+
+        email = self.cleaned_data["email"]
+        users = self.get_users(email)
+
+        for user in users:
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = token_generator.make_token(user)
+
+            context = {
+                "email": user.email,
+                "domain": request.get_host(),
+                "site_name": "Maiprot",
+                "uid": uid,
+                "user": user,
+                "token": token,
+                "protocol": "https",
+            }
+
+            enviar_correo_html(
+                subject="Restablecer contraseña - Maiprot",
+                template_html=email_template_name,
+                template_txt="registration/password_reset_email.txt",
+                context=context,
+                recipient=user.email
+            )
