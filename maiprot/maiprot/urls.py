@@ -16,25 +16,25 @@ from appweb.forms import PasswordResetCustomForm
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # Rutas principales
+    # Rutas de la web principal
     path('', include('appweb.urls')),
 
     # API
     path('api/v1/', include('appweb.api.urls')),
     path('api-auth/', include('rest_framework.urls')),
 
-    # Swagger
+    # ESQUEMA Y DOCUMENTACIÓN
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
-    # === PASSWORD RESET PERSONALIZADO ===
+    # === Password Reset Personalizado ===
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(
             form_class=PasswordResetCustomForm,
             template_name="password/password_reset.html",
-            email_template_name="password/password_reset_email.txt",  # obligatorio TXT
-            html_email_template_name="password/password_reset_email.html",  # tu HTML bonito
+            email_template_name="password/password_reset_email.txt",  # TXT
+            html_email_template_name="password/password_reset_email.html",  # HTML
             subject_template_name="password/password_reset_subject.txt",
         ),
         name="password_reset",
