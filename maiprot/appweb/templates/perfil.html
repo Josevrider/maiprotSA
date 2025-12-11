@@ -11,8 +11,8 @@
         <div class="perfil-header">
             <h2>
                 Perfil de 
-                {% if user.first_name %}
-                    {{ user.first_name }} {{ user.last_name }}
+                {% if usuario.first_name %}
+                    {{ usuario.first_name }} {{ usuario.last_name }}
                 {% else %}
                     Usuario
                 {% endif %}
@@ -22,7 +22,12 @@
         <div class="perfil-body">
 
             <div class="perfil-foto">
-                <img src="{% if user.perfilusuario.imagen_perfil %}{{ user.perfilusuario.imagen_perfil.url }}{% else %}{% static 'img/default_profile.png' %}{% endif %}" alt="Foto de perfil">
+                <img src="{% if usuario.perfilusuario.imagen_perfil %}
+                            {{ usuario.perfilusuario.imagen_perfil.url }}
+                          {% else %}
+                            {% static 'img/default_profile.png' %}
+                          {% endif %}" 
+                     alt="Foto de perfil">
             </div>
 
             <div class="perfil-info">
@@ -30,18 +35,18 @@
                 <p><strong>RUT:</strong> {{ rut_formateado }}</p>
 
                 <p><strong>Nombre:</strong> 
-                    {{ user.first_name|default:"No especificado" }} 
-                    {{ user.last_name|default:"" }}
+                    {{ usuario.first_name|default:"No especificado" }}
+                    {{ usuario.last_name|default:"" }}
                 </p>
 
-                <p><strong>Email:</strong> {{ user.email|default:"No especificado" }}</p>
+                <p><strong>Email:</strong> {{ usuario.email|default:"No especificado" }}</p>
 
                 <p><strong>Dirección:</strong> 
-                    {{ user.perfilusuario.direccion|default:"No especificificada" }}
+                    {{ usuario.perfilusuario.direccion|default:"No especificada" }}
                 </p>
 
                 <p><strong>Teléfono:</strong> 
-                    {{ user.perfilusuario.telefono|default:"No especificado" }}
+                    {{ usuario.perfilusuario.telefono|default:"No especificado" }}
                 </p>
 
             </div>

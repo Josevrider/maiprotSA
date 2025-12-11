@@ -20,14 +20,41 @@ def formatear_clp(valor):
     except:
         return valor
     
+# ============================
+# FORMATEAR RUT CON SEGURIDAD
+# ============================
 def formatear_rut(rut):
-    """Convierte '212869503' en '21.286.950-3' visualmente."""
-    rut = rut.replace(".", "").replace("-", "")
-    cuerpo = rut[:-1]
-    dv = rut[-1]
+    """
+    Recibe algo que se supone es un RUT (ej: '212869503' o '21.286.950-3')
+    y lo devuelve formateado '21.286.950-3'.
+    Si NO parece un RUT (por ejemplo 'miguelS'), lo devuelve tal cual.
+    """
+    if not rut:
+        return ""
 
-    cuerpo_formateado = f"{int(cuerpo):,}".replace(",", ".")
-    return f"{cuerpo_formateado}-{dv}"
+    # Aseguramos que sea string
+    rut = str(rut).strip().upper()
+
+    # Limpiar puntos y guión
+    limpio = rut.replace(".", "").replace("-", "")
+
+    # Debe tener al menos 2 caracteres: cuerpo + DV
+    if len(limpio) < 2:
+        return rut
+
+    cuerpo = limpio[:-1]
+    dv = limpio[-1]
+
+    # Si el cuerpo NO son solo números, no intentamos formatear
+    if not cuerpo.isdigit():
+        return rut
+
+    try:
+        cuerpo_formateado = f"{int(cuerpo):,}".replace(",", ".")
+        return f"{cuerpo_formateado}-{dv}"
+    except Exception:
+        # Si algo falla, devolvemos el valor original
+        return rut
 
 # -----------------------------------------------------
 # VISTAS BASE DEL PROYECTO MAIPROT
@@ -133,12 +160,14 @@ def logout_usuario(request):
 
 @login_required
 def ver_perfil(request):
-    rut_formateado = formatear_rut(request.user.username)
+    usuario = request.user
+    rut_formateado = formatear_rut(usuario.username)
 
     return render(request, 'perfil.html', {
-        'usuario': request.user,
-        'rut_formateado': rut_formateado
+        "usuario": usuario,
+        "rut_formateado": rut_formateado
     })
+
 
 @login_required
 def editar_perfil(request):
