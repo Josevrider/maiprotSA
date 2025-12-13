@@ -3,14 +3,44 @@
 
 <h2>Panel de Administración</h2>
 
+<!-- ===============================
+     SECCIÓN: MÉTRICAS (DASHBOARD)
+================================ -->
+<div class="dashboard-cards">
+
+    <div class="dashboard-card">
+        <h3>Productos</h3>
+        <p class="dashboard-number">{{ total_productos }}</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Pedidos</h3>
+        <p class="dashboard-number">{{ total_pedidos }}</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Pedidos Pendientes</h3>
+        <p class="dashboard-number">{{ pedidos_pendientes }}</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Usuarios</h3>
+        <p class="dashboard-number">{{ total_usuarios }}</p>
+    </div>
+
+</div>
+
+<!-- ===============================
+     SECCIÓN: ACCESOS RÁPIDOS
+================================ -->
 <div class="admin-panel">
 
     <a href="{% url 'admin_pedidos' %}" class="admin-card">
-        Gestión de Pedidos
+        📦 Gestión de Pedidos
     </a>
 
     <a href="{% url 'admin_usuarios' %}" class="admin-card">
-        Gestión de Usuarios
+        👥 Gestión de Usuarios
     </a>
 
 </div>

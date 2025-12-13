@@ -1,0 +1,23 @@
+<h2>Productos</h2>
+
+<a href="{% url 'admin_producto_crear' %}">+ Nuevo producto</a>
+
+<table>
+<tr>
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>Precio</th>
+    <th>Acciones</th>
+</tr>
+
+{% for p in productos %}
+<tr>
+    <td>{{ p.id }}</td>
+    <td>{{ p.nombre }}</td>
+    <td>{{ p.precio }}</td>
+    <td>
+        <a href="{% url 'admin_producto_editar' p.id %}">Editar</a>
+    </td>
+</tr>
+{% endfor %}
+</table>

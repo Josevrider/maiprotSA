@@ -497,3 +497,71 @@ from django.contrib.auth.models import User
 def admin_usuarios(request):
     usuarios = User.objects.all().order_by("id")
     return render(request, "admin/usuarios.html", {"usuarios": usuarios})
+
+@login_required
+@user_passes_test(es_admin)
+def admin_productos(request):
+    productos = Producto.objects.all().order_by("-id")
+    return render(request, "admin/productos.html", {
+        "productos": productos
+    })
+
+@login_required
+@user_passes_test(es_admin)
+def admin_producto_crear(request):
+    if request.method == "POST":
+        form = ProductoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("admin_productos")
+    else:
+        form = ProductoForm()
+
+    return render(request, "admin/producto_form.html", {
+        "form": form,
+        "accion": "Crear producto"
+    })
+
+
+@login_required
+@user_passes_test(es_admin)
+def admin_producto_editar(request, id):
+    producto = Producto.objects.get(id=id)
+
+    if request.method == "POST":
+        form = ProductoForm(request.POST, request.FILES, instance=producto)
+        if form.is_valid():
+            form.save()
+            return redirect("admin_productos")
+    else:
+        form = ProductoForm(instance=producto)
+
+    return render(request, "admin/producto_form.html", {
+        "form": form,
+        "accion": "Editar producto"
+    })
+
+@login_required
+@user_passes_test(es_admin)
+def admin_pedidos(request):
+    pedidos = Pedido.objects.all().order_by("-fecha")
+    return render(request, "admin/pedidos.html", {
+        "pedidos": pedidos
+    })
+
+@login_required
+@user_passes_test(es_admin)
+def panel_admin(request):
+
+    total_productos = Producto.objects.count()
+    total_pedidos = Pedido.objects.count()
+    pedidos_pendientes = Pedido.objects.filter(estado="Pendiente").count()
+    total_usuarios = User.objects.count()
+
+    return render(request, "admin/panel_admin.html", {
+        "total_productos": total_productos,
+        "total_pedidos": total_pedidos,
+        "pedidos_pendientes": pedidos_pendientes,
+        "total_usuarios": total_usuarios,
+    })
+

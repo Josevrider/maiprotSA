@@ -93,5 +93,11 @@ urlpatterns = [
     path("admin-panel/", views.panel_admin, name="panel_admin"),
     path("admin-panel/pedidos/", views.admin_pedidos, name="admin_pedidos"),
     path("admin-panel/usuarios/", views.admin_usuarios, name="admin_usuarios"),
+    path("admin-panel/productos/", admin_productos, name="admin_productos"),
+    path("admin-panel/productos/nuevo/", admin_producto_crear, name="admin_producto_crear"),
+    path("admin-panel/productos/editar/<int:id>/", admin_producto_editar, name="admin_producto_editar"),
+    path("admin-panel/", panel_admin, name="panel_admin"),
+
+
 
 ]
