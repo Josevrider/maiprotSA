@@ -8,6 +8,7 @@ from .models import PerfilUsuario
 from django.db.models import Sum, F
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 
@@ -470,3 +471,21 @@ def eliminar_item(request, item_id):
     messages.success(request, "Producto eliminado del carrito.")
     return redirect("ver_carrito")
 
+
+# -----------------------------------------------------
+#   PANEL DE ADMIN
+# -----------------------------------------------------
+
+def es_admin(user):
+    return user.is_staff or user.is_superuser
+
+@login_required
+@user_passes_test(es_admin)
+def panel_admin(request):
+    return render(request, "admin/panel_admin.html")
+
+@login_required
+@user_passes_test(es_admin)
+def admin_pedidos(request):
+    pedidos = Pedido.objects.all().order_by("-id")
+    return render(request, "admin/pedidos.html", {"pedidos": pedidos})

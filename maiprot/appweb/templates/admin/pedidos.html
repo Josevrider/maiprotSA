@@ -1,0 +1,21 @@
+<h2>Pedidos</h2>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+    </tr>
+
+    {% for p in pedidos %}
+    <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.usuario }}</td>
+        <td>{{ p.estado }}</td>
+        <td>
+            <a href="#">Editar</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

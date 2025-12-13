@@ -85,4 +85,11 @@ urlpatterns = [
         ),
         name='password_reset_complete'
     ),
+
+    # =====================================================
+    # ADMIN
+    # =====================================================
+
+    path("admin-panel/", views.panel_admin, name="panel_admin"),
+
 ]

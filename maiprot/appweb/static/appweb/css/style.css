@@ -1107,3 +1107,20 @@ footer {
     color: #a93226;
     margin-bottom: 20px;
 }
+
+/* =====================================================
+      PANEL DE ADMIN
+===================================================== */
+
+.admin-panel {
+    display: flex;
+    gap: 20px;
+}
+
+.admin-card {
+    padding: 20px;
+    background: #0a3d62;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+}
