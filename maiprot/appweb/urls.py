@@ -91,5 +91,6 @@ urlpatterns = [
     # =====================================================
 
     path("admin-panel/", views.panel_admin, name="panel_admin"),
+    path("admin-panel/pedidos/", views.admin_pedidos, name="admin_pedidos"),
 
 ]

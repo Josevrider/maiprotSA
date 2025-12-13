@@ -19,6 +19,8 @@ urlpatterns = [
     # Rutas de la web principal
     path('', include('appweb.urls')),
 
+
+
     # API
     path('api/v1/', include('appweb.api.urls')),
     path('api-auth/', include('rest_framework.urls')),
