@@ -489,3 +489,11 @@ def panel_admin(request):
 def admin_pedidos(request):
     pedidos = Pedido.objects.all().order_by("-id")
     return render(request, "admin/pedidos.html", {"pedidos": pedidos})
+
+from django.contrib.auth.models import User
+
+@login_required
+@user_passes_test(es_admin)
+def admin_usuarios(request):
+    usuarios = User.objects.all().order_by("id")
+    return render(request, "admin/usuarios.html", {"usuarios": usuarios})
